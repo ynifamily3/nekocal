@@ -10,6 +10,7 @@
 #import <AudioToolbox/AudioToolbox.h>
 #import <UniformTypeIdentifiers/UniformTypeIdentifiers.h>
 #import "ViewController.h"
+#import "EmojiRotation.h"
 #import "Itsycal.h"
 #import "ItsycalWindow.h"
 #import "DatePickerVC.h"
@@ -32,7 +33,7 @@ static NSArray<NSString *> *ObservedDefaultsKeys(void)
 {
     return @[kShowEventDays, kMenuBarIconType, kShowMonthInIcon, kShowDayOfWeekInIcon,
               kShowDaysWithNoEventsInAgenda, kShowMeetingIndicator, kHideIcon,
-              kBaselineOffset, kClockFormat, kWindowPosition];
+              kBaselineOffset, kClockFormat, kWindowPosition, @"EmojiRotationRevision"];
 }
 
 @implementation ViewController
@@ -48,6 +49,7 @@ static NSArray<NSString *> *ObservedDefaultsKeys(void)
     NSDateFormatter       *_iconDateFormatter;
     NSTimeInterval         _inactiveTime;
     NSDictionary          *_filteredEventsForDate;
+    NSSet<NSDate *>        *_holidayDates;
     NSTimer   *_timer;
     NSString  *_clockFormat;
     BOOL       _clockUsesSeconds;
@@ -109,7 +111,7 @@ static NSArray<NSString *> *ObservedDefaultsKeys(void)
     _btnAdd = btn(@"btnAdd", NSLocalizedString(@"New Event   ⌘N", @""), @"n", @selector(addCalendarEvent:));
     _btnCal = btn(@"btnCal", NSLocalizedString(@"Open Calendar   ⌘O", @""), @"o", @selector(showCalendarApp:));
     _btnOpt = btn(@"btnOpt", NSLocalizedString(@"Options", @""), @"", @selector(showOptionsMenu:));
-    _btnPin = btn(@"btnPin", NSLocalizedString(@"Pin Itsycal   P", @""), @"p", @selector(pin:));
+    _btnPin = btn(@"btnPin", NSLocalizedString(@"Pin KawaiiCal   P", @""), @"p", @selector(pin:));
     _btnPin.keyEquivalentModifierMask = 0;
     _btnPin.alternateImage = [NSImage imageNamed:@"btnPinAlt"];
     [_btnPin setButtonType:NSButtonTypeToggle];
@@ -137,6 +139,7 @@ static NSArray<NSString *> *ObservedDefaultsKeys(void)
     // depend on previous ones.
     
     _iconDateFormatter = [NSDateFormatter new];
+    _iconDateFormatter.locale = DisplayLocale();
     _iconDateFormatter.formattingContext = NSFormattingContextStandalone;
     _iconDateFormatter.calendar = [NSCalendar calendarWithIdentifier:NSCalendarIdentifierISO8601];
     _inactiveTime = 0;
@@ -257,7 +260,7 @@ static NSArray<NSString *> *ObservedDefaultsKeys(void)
     if (_ec.calendarAccessGranted == NO) {
         NSAlert *alert = [NSAlert new];
         alert.messageText = NSLocalizedString(@"Calendar access was denied.", @"");
-        alert.informativeText = NSLocalizedString(@"Itsycal is more useful when you allow it to add events to your calendars. You can change this setting in System Settings › Privacy & Security › Calendars.", @"");
+        alert.informativeText = NSLocalizedString(@"KawaiiCal is more useful when you allow it to add events to your calendars. You can change this setting in System Settings › Privacy & Security › Calendars.", @"");
         [alert runModal];
         return;
     }
@@ -274,7 +277,7 @@ static NSArray<NSString *> *ObservedDefaultsKeys(void)
     if (atLeastOneModifiableCalendar == NO) {
         NSAlert *alert = [NSAlert new];
         alert.messageText = NSLocalizedString(@"There are no modifiable calendars.", @"");
-        alert.informativeText = NSLocalizedString(@"Itsycal cannot create a new event unless there is at least one calendar you have permission to modify.", @"");
+        alert.informativeText = NSLocalizedString(@"KawaiiCal cannot create a new event unless there is at least one calendar you have permission to modify.", @"");
         [alert runModal];
         return;
     }
@@ -364,8 +367,8 @@ static NSArray<NSString *> *ObservedDefaultsKeys(void)
     NSMenu *optMenu = [[NSMenu alloc] initWithTitle:@"Options Menu"];
     NSInteger i = 0;
 
-    [optMenu insertItemWithTitle:NSLocalizedString(@"About Itsycal", @"") action:@selector(showAbout:) keyEquivalent:@"" atIndex:i++];
-    [optMenu insertItemWithTitle:NSLocalizedString(@"Check for Updates…", @"") action:@selector(checkForUpdates:) keyEquivalent:@"" atIndex:i++];
+    [optMenu insertItemWithTitle:NSLocalizedString(@"About KawaiiCal", @"") action:@selector(showAbout:) keyEquivalent:@"" atIndex:i++];
+
     [optMenu insertItem:[NSMenuItem separatorItem] atIndex:i++];
     [optMenu insertItemWithTitle:NSLocalizedString(@"Go to Date…", @"") action:@selector(showDatePickerPopover:) keyEquivalent:@"T" atIndex:i++];
     [optMenu insertItem:[NSMenuItem separatorItem] atIndex:i++];
@@ -374,7 +377,7 @@ static NSArray<NSString *> *ObservedDefaultsKeys(void)
     [optMenu insertItem:[NSMenuItem separatorItem] atIndex:i++];
     [optMenu insertItemWithTitle:NSLocalizedString(@"Help…", @"") action:@selector(navigateToHelp:) keyEquivalent:@"" atIndex:i++];
     [optMenu insertItem:[NSMenuItem separatorItem] atIndex:i++];
-    [optMenu insertItemWithTitle:NSLocalizedString(@"Quit Itsycal", @"") action:@selector(terminate:) keyEquivalent:@"q" atIndex:i++];
+    [optMenu insertItemWithTitle:NSLocalizedString(@"Quit KawaiiCal", @"") action:@selector(terminate:) keyEquivalent:@"q" atIndex:i++];
 
     // Never show menu item images, whatever the system configuration.
     for (NSMenuItem *item in optMenu.itemArray) {
@@ -451,7 +454,7 @@ static NSArray<NSString *> *ObservedDefaultsKeys(void)
 
 - (void)checkForUpdates:(id)sender
 {
-    [[SUUpdater sharedUpdater] checkForUpdates:self];
+    // Upstream updates must not replace the personal fork.
 }
 
 - (void)openDateAndTimePrefs:(id)sender
@@ -499,7 +502,7 @@ static NSArray<NSString *> *ObservedDefaultsKeys(void)
     [(NSButtonCell *)_statusItem.button.cell setHighlightsBy:NSNoCellMask];
 
     // Remember item position in menubar. (@pskowronek (Github))
-    [_statusItem setAutosaveName:@"ItsycalStatusItem"];
+    [_statusItem setAutosaveName:@"KawaiiCalStatusItem"];
 
     [self clockFormatDidChange];
     [self updateMenubarIcon];
@@ -534,7 +537,7 @@ static NSArray<NSString *> *ObservedDefaultsKeys(void)
     item = [menu addItemWithTitle:NSLocalizedString(@"Date & Time…", @"") action:@selector(openDateAndTimePrefs:) keyEquivalent:@""];
     item.target = self;
     [menu addItem:[NSMenuItem separatorItem]];
-    item = [menu addItemWithTitle:NSLocalizedString(@"Quit Itsycal", @"") action:@selector(terminate:) keyEquivalent:@""];
+    item = [menu addItemWithTitle:NSLocalizedString(@"Quit KawaiiCal", @"") action:@selector(terminate:) keyEquivalent:@""];
     item.target = NSApp;
 
     // Never show menu item images, whatever the system configuration.
@@ -608,8 +611,8 @@ static NSArray<NSString *> *ObservedDefaultsKeys(void)
         // languageCode/countryCode can be nil (e.g. a language-only locale
         // with no country component), so guard against building a malformed
         // "en_(null)@calendar=gregorian" identifier.
-        NSString *languageCode = NSLocale.currentLocale.languageCode;
-        NSString *countryCode = NSLocale.currentLocale.countryCode;
+        NSString *languageCode = DisplayLocale().languageCode;
+        NSString *countryCode = DisplayLocale().countryCode;
         NSString *languageAndCountry = (languageCode && countryCode)
             ? [NSString stringWithFormat:@"%@_%@", languageCode, countryCode]
             : (languageCode ?: @"en");
@@ -636,7 +639,7 @@ static NSArray<NSString *> *ObservedDefaultsKeys(void)
 
 - (void)updateMenubarIcon
 {
-    NSString *accessibilityTitle = @"Itsycal";
+    NSString *accessibilityTitle = @"KawaiiCal";
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     BOOL hideIcon = [defaults boolForKey:kHideIcon];
     if (hideIcon) {
@@ -666,7 +669,7 @@ static NSArray<NSString *> *ObservedDefaultsKeys(void)
         // provide an NSAttributedString with a baseline offset.
         CGFloat baselineOffset = [defaults floatForKey:kBaselineOffset];
         baselineOffset = MIN(2.0, MAX(-2.0, baselineOffset));
-        NSString *buttonText = [_iconDateFormatter stringFromDate:[NSDate new]];
+        NSString *buttonText = [EmojiRotation.shared renderPattern:_clockFormat date:NSDate.date formatter:_iconDateFormatter];
         accessibilityTitle = [accessibilityTitle stringByAppendingFormat:@", %@", buttonText];
         if (!hideIcon) {
             // Prepend a space to _clockFormat text to separate it from icon.
@@ -1149,6 +1152,11 @@ static NSArray<NSString *> *ObservedDefaultsKeys(void)
 
 #pragma mark - Events
 
+- (BOOL)isHolidayForDate:(MoDate)date
+{
+    return [_holidayDates containsObject:[_nsCal startOfDayForDate:MakeNSDateWithDate(date, _nsCal)]];
+}
+
 - (NSArray *)eventsForDate:(MoDate)date
 {
     NSDate *nsDate = MakeNSDateWithDate(date, _nsCal);
@@ -1193,6 +1201,8 @@ static NSArray<NSString *> *ObservedDefaultsKeys(void)
 {
     //os_log(OS_LOG_DEFAULT, "%s", __FUNCTION__);
     _filteredEventsForDate = [_ec filteredEventsForDate];
+    _holidayDates = [_ec holidayDates];
+    _agendaVC.holidayDates = _holidayDates;
     [_moCal reloadData];
     [self updateAgenda];
 }
@@ -1361,6 +1371,7 @@ static NSArray<NSString *> *ObservedDefaultsKeys(void)
 
 - (void)clockFormatDidChange
 {
+    _iconDateFormatter.locale = DisplayLocale();
     NSString *format = [[NSUserDefaults standardUserDefaults] stringForKey:kClockFormat];
 
     // -observeValueForKeyPath:ofObject:change:context: sends
@@ -1496,7 +1507,8 @@ static NSArray<NSString *> *ObservedDefaultsKeys(void)
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context
 {
-    if ([keyPath isEqualToString:kShowEventDays] ||
+    if ([keyPath isEqualToString:@"EmojiRotationRevision"]) { [EmojiRotation.shared currentEmoji]; [self updateMenubarIcon]; }
+    else if ([keyPath isEqualToString:kShowEventDays] ||
         [keyPath isEqualToString:kShowDaysWithNoEventsInAgenda]) {
         [self updateAgenda];
     }

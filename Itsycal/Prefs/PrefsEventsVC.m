@@ -4,6 +4,7 @@
 //
 
 #import "PrefsEventsVC.h"
+#import "SettingsStyle.h"
 #import "Itsycal.h"
 #import "MoVFLHelper.h"
 #import "EventCenter.h"
@@ -17,6 +18,7 @@ static NSString * const kCalendarCellId = @"CalendarCell";
 @end
 @interface CalendarCellView : NSView
 @property (nonatomic) NSButton *checkbox;
+@property (nonatomic) NSButton *holidayCheckbox;
 @end
 
 #pragma mark -
@@ -100,13 +102,26 @@ static NSString * const kCalendarCellId = @"CalendarCell";
     _showLocation = chkbx(NSLocalizedString(@"Show event location", @""));
     _showDaysWithoutEvents = chkbx(NSLocalizedString(@"Show days with no events", @""));
 
-    MoVFLHelper *vfl = [[MoVFLHelper alloc] initWithSuperview:v metrics:@{@"m": @20} views:NSDictionaryOfVariableBindings(eventListLabel, separator, tvContainer, _agendaDaysLabel, _agendaDaysPopup, _showLocation, _showDaysWithoutEvents)];
-    [vfl :@"V:|-m-[tvContainer(170)]-m-[eventListLabel]-10-[_agendaDaysPopup]-m-[_showLocation]-[_showDaysWithoutEvents]-m-|"];
-    [vfl :@"H:|-m-[eventListLabel]-[separator]-m-|" :NSLayoutFormatAlignAllCenterY];
-    [vfl :@"H:|-m-[tvContainer]-m-|"];
-    [vfl :@"H:|-m-[_agendaDaysLabel]-[_agendaDaysPopup]-(>=m)-|" :NSLayoutFormatAlignAllFirstBaseline];
-    [vfl :@"H:|-m-[_showLocation]-(>=m)-|"];
-    [vfl :@"H:|-m-[_showDaysWithoutEvents]-(>=m)-|"];
+    [separator removeFromSuperview];
+    SettingsCard *calendarsCard=[SettingsCard new], *listCard=[SettingsCard new];
+    [v addSubview:calendarsCard]; [v addSubview:listCard];
+    NSTextField *calendarsTitle=[NSTextField labelWithString:@"캘린더"];
+    calendarsTitle.font=[NSFont systemFontOfSize:13 weight:NSFontWeightSemibold];
+    NSTextField *hint=[NSTextField wrappingLabelWithString:@"목록에 표시할 캘린더와 공휴일로 사용할 캘린더를 선택하세요."];
+    hint.font=[NSFont systemFontOfSize:11]; hint.textColor=NSColor.secondaryLabelColor;
+    for(NSView *item in @[calendarsTitle,hint,tvContainer]) [calendarsCard addSubview:item];
+    for(NSView *item in @[eventListLabel,_agendaDaysLabel,_agendaDaysPopup,_showLocation,_showDaysWithoutEvents]) [listCard addSubview:item];
+    tvContainer.borderType=NSNoBorder; tvContainer.drawsBackground=NO; _calendarsTV.backgroundColor=NSColor.clearColor;
+    MoVFLHelper *outer=[[MoVFLHelper alloc] initWithSuperview:v metrics:nil views:NSDictionaryOfVariableBindings(calendarsCard,listCard)];
+    [outer :@"V:|-24-[calendarsCard]-16-[listCard]-24-|"];
+    [outer :@"H:|-24-[calendarsCard]-24-|"]; [outer :@"H:|-24-[listCard]-24-|"];
+    MoVFLHelper *a=[[MoVFLHelper alloc] initWithSuperview:calendarsCard metrics:nil views:NSDictionaryOfVariableBindings(calendarsTitle,hint,tvContainer)];
+    [a :@"V:|-16-[calendarsTitle]-6-[hint]-12-[tvContainer(240)]-12-|"];
+    [a :@"H:|-16-[calendarsTitle]-(>=16)-|"]; [a :@"H:|-16-[hint]-16-|"]; [a :@"H:|-8-[tvContainer]-8-|"];
+    MoVFLHelper *b=[[MoVFLHelper alloc] initWithSuperview:listCard metrics:nil views:NSDictionaryOfVariableBindings(eventListLabel,_agendaDaysLabel,_agendaDaysPopup,_showLocation,_showDaysWithoutEvents)];
+    [b :@"V:|-16-[eventListLabel]-12-[_agendaDaysPopup]-12-[_showLocation]-8-[_showDaysWithoutEvents]-16-|"];
+    [b :@"H:|-16-[_agendaDaysLabel(112)]-12-[_agendaDaysPopup]-(>=16)-|" :NSLayoutFormatAlignAllCenterY];
+    for(NSString *f in @[@"H:|-16-[eventListLabel]-(>=16)-|",@"H:|-16-[_showLocation]-(>=16)-|",@"H:|-16-[_showDaysWithoutEvents]-(>=16)-|"]) [b :f];
 
     // Bindings for agenda days
     [_agendaDaysPopup bind:@"selectedIndex" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:[@"values." stringByAppendingString:kShowEventDays] options:@{NSContinuouslyUpdatesValueBindingOption: @(YES)}];
@@ -160,6 +175,13 @@ static NSString * const kCalendarCellId = @"CalendarCell";
 }
 
 
+- (void)holidayClicked:(NSButton *)checkbox
+{
+    CalendarInfo *info=_sourcesAndCalendars[checkbox.tag];
+    [self.ec updateHolidayCalendarForIdentifier:info.calendar.calendarIdentifier holiday:checkbox.state==NSControlStateValueOn];
+    [_calendarsTV reloadData];
+}
+
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView
 {
     // If access is denied, return 1 row for a message about granting access.
@@ -192,7 +214,7 @@ static NSString * const kCalendarCellId = @"CalendarCell";
     }
     NSAttributedString *attrStr = [[NSAttributedString alloc] initWithString:str attributes:@{NSFontAttributeName: [NSFont boldSystemFontOfSize:12]}];
     CGRect attrStrRect = [attrStr boundingRectWithSize:CGSizeMake(textWidth, 10000) options:NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading context:nil];
-    return NSHeight(attrStrRect) + 4 + 4; // plus top & bottom margins
+    return NSHeight(attrStrRect) + 4 + 4 + ([obj isKindOfClass:CalendarInfo.class] ? 23 : 0); // plus top & bottom margins
 }
 
 - (BOOL)tableView:(NSTableView *)aTableView shouldSelectRow:(NSInteger)rowIndex
@@ -209,7 +231,7 @@ static NSString * const kCalendarCellId = @"CalendarCell";
         if (!message) message = [SourceCellView new];
         message.textField.lineBreakMode = NSLineBreakByWordWrapping;
         message.textField.font = [NSFont systemFontOfSize:12];
-        message.textField.stringValue = NSLocalizedString(@"Calendar access denied.\n\nItsycal is more useful when it can display events from your calendars. You can change this setting in System Settings › Privacy & Security › Calendars", @"");
+        message.textField.stringValue = NSLocalizedString(@"Calendar access denied.\n\nKawaiiCal is more useful when it can display events from your calendars. You can change this setting in System Settings › Privacy & Security › Calendars", @"");
         return message;
     }
     
@@ -232,6 +254,11 @@ static NSString * const kCalendarCellId = @"CalendarCell";
         calendar.checkbox.action = @selector(calendarClicked:);
         calendar.checkbox.state = info.selected == NSControlStateValueOn;
         calendar.checkbox.tag = row;
+        calendar.holidayCheckbox.target = self;
+        calendar.holidayCheckbox.action = @selector(holidayClicked:);
+        calendar.holidayCheckbox.tag = row;
+        calendar.holidayCheckbox.state = [[NSUserDefaults.standardUserDefaults arrayForKey:@"HolidayCalendarIdentifiers"] containsObject:info.calendar.calendarIdentifier] ? NSControlStateValueOn : NSControlStateValueOff;
+        [calendar.holidayCheckbox.cell setAccessibilityLabel:[NSString stringWithFormat:@"%@의 일정은 공휴일",info.calendar.title]];
         calendar.checkbox.attributedTitle = [[NSAttributedString alloc] initWithString:info.calendar.title attributes:@{NSForegroundColorAttributeName: info.calendar.color, NSFontAttributeName: [NSFont boldSystemFontOfSize:12]}];
         v = calendar;
     }
@@ -284,6 +311,15 @@ static NSString * const kCalendarCellId = @"CalendarCell";
         _checkbox.lineBreakMode = NSLineBreakByWordWrapping;
         [_checkbox setButtonType:NSButtonTypeSwitch];
         [self addSubview:_checkbox];
+        _holidayCheckbox=[NSButton checkboxWithTitle:@"이 캘린더의 일정은 공휴일" target:nil action:nil];
+        _holidayCheckbox.font=[NSFont systemFontOfSize:11];
+        _holidayCheckbox.toolTip=@"일정 목록 표시 여부와 관계없이 해당 날짜를 붉은색으로 표시합니다.";
+        _holidayCheckbox.translatesAutoresizingMaskIntoConstraints=NO;
+        [self addSubview:_holidayCheckbox];
+        [NSLayoutConstraint activateConstraints:@[
+            [_holidayCheckbox.leadingAnchor constraintEqualToAnchor:self.leadingAnchor constant:24],
+            [_holidayCheckbox.trailingAnchor constraintLessThanOrEqualToAnchor:self.trailingAnchor constant:-4],
+            [_holidayCheckbox.topAnchor constraintEqualToAnchor:_checkbox.bottomAnchor constant:2]]];
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-4-[_checkbox]-4-|" options:0 metrics:nil views:@{@"_checkbox": _checkbox}]];
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-4-[_checkbox]" options:0 metrics:nil views:@{@"_checkbox": _checkbox}]];
     }

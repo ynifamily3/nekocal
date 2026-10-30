@@ -97,6 +97,8 @@ typedef NS_OPTIONS(NSInteger, DOWMask) {
 // - Nil means there is no dot.
 // - An empty array means there is a single dot in the default theme color.
 // - Otherwise, there are up to 3 dots with the given colors.
+- (BOOL)isHolidayForDate:(MoDate)date;
+
 - (NSArray<NSColor *> *)dotColorsForDate:(MoDate)date useColor:(BOOL)useColor;
 
 @end

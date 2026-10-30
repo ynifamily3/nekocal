@@ -18,6 +18,9 @@
  */
 NSTimeInterval MonotonicClockTime(void);
 
+// Match Korean app language while retaining region and 12/24-hour preferences.
+NSLocale *DisplayLocale(void);
+
 /**
  * If the locale is English and we are in 12 hour time, remove :00 from a
  * formatted duration string. Effect is 3:00 PM -> 3 PM.

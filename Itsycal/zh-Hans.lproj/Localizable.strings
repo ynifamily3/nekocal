@@ -18,7 +18,7 @@
 "15 minutes before" = "15 分钟前";
 "30 minutes before" = "30 分钟前";
 "31 days" = "31 天";
-"About Itsycal" = "关于 Itsycal";
+"About KawaiiCal" = "关于 KawaiiCal";
 /* About prefs tab label */
 "About" = "关于";
 "Add Location or Video Call" = "添加位置或视频通话";
@@ -36,9 +36,9 @@
 "Calendar" = "日历";
 "Calendar access denied.
 
-Itsycal is more useful when it can display events from your calendars. You can change this setting in System Settings › Privacy & Security › Calendars" = "日历访问被拒绝。
+KawaiiCal is more useful when it can display events from your calendars. You can change this setting in System Settings › Privacy & Security › Calendars" = "日历访问被拒绝。
 
-当 Itsycal 可以显示你的日历事件时会更好用。你可以在 “系统设置 › 隐私与安全 › 日历” 中更改此设置。";
+当 KawaiiCal 可以显示你的日历事件时会更好用。你可以在 “系统设置 › 隐私与安全 › 日历” 中更改此设置。";
 "Calendar access was denied." = "日历访问被拒绝。";
 /* Accessibility description for menu bar icon showing a grid of days */
 "Calendar grid" = "日历网格";
@@ -82,15 +82,15 @@ Itsycal is more useful when it can display events from your calendars. You can c
 "Help…" = "帮助…";
 "Hide icon" = "隐藏图标";
 "Highlight:" = "高亮：";
-"Itsycal cannot create a new event unless there is at least one calendar you have permission to modify." = "除非有至少一个有权限修改的日历，否则 Itsycal 无法创建新事件。";
-/* Accessibility description for menu bar icon showing the Itsycal face */
-"Itsycal face" = "Itsycal 笑脸";
-"Itsycal is more useful when you allow it to add events to your calendars. You can change this setting in System Settings › Privacy & Security › Calendars." = "当你允许 Itsycal 将事件添加到你的日历中时会更好用。你可以在 “系统设置 › 隐私与安全 › 日历” 中更改此设置。";
-"Itsycal must be run from the Applications folder in order to work properly.
+"KawaiiCal cannot create a new event unless there is at least one calendar you have permission to modify." = "除非有至少一个有权限修改的日历，否则 KawaiiCal 无法创建新事件。";
+/* Accessibility description for menu bar icon showing the KawaiiCal face */
+"KawaiiCal face" = "KawaiiCal 笑脸";
+"KawaiiCal is more useful when you allow it to add events to your calendars. You can change this setting in System Settings › Privacy & Security › Calendars." = "当你允许 KawaiiCal 将事件添加到你的日历中时会更好用。你可以在 “系统设置 › 隐私与安全 › 日历” 中更改此设置。";
+"KawaiiCal must be run from the Applications folder in order to work properly.
 
-Please quit Itsycal, move it to the Applications folder, and relaunch." = "必须从应用程序文件夹运行 Itsycal 才能正常工作。
+Please quit KawaiiCal, move it to the Applications folder, and relaunch." = "必须从应用程序文件夹运行 KawaiiCal 才能正常工作。
 
-请退出 Itsycal，将其移动到应用程序文件夹，然后重新启动。";
+请退出 KawaiiCal，将其移动到应用程序文件夹，然后重新启动。";
 "Keyboard shortcut" = "键盘快捷键";
 /* Large text size */
 "Large" = "大";
@@ -105,7 +105,7 @@ Please quit Itsycal, move it to the Applications folder, and relaunch." = "必�
 /* Accessibility label for menu bar icon picker */
 "Menu bar icon" = "菜单栏图标";
 "Monday" = "星期一";
-"Move Itsycal to the Applications folder" = "将 Itsycal 移动到应用程序文件夹";
+"Move KawaiiCal to the Applications folder" = "将 KawaiiCal 移动到应用程序文件夹";
 /* Repeat ends never */
 "Never" = "从不";
 "New Event" = "新事件";
@@ -122,8 +122,8 @@ Please quit Itsycal, move it to the Applications folder, and relaunch." = "必�
 "Outline current month" = "为当前月份显示轮廓";
 /* Accessibility description for menu bar icon with the date in an outlined square */
 "Outlined date" = "空心日期";
-"Pin Itsycal   P" = "固定 Itsycal   P";
-"Quit Itsycal" = "退出 Itsycal";
+"Pin KawaiiCal   P" = "固定 KawaiiCal   P";
+"Quit KawaiiCal" = "退出 KawaiiCal";
 "Repeat:" = "重复：";
 "Saturday" = "星期六";
 "Settings…" = "设置…";

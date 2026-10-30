@@ -6,6 +6,8 @@
 //  Copyright (c) 2015 mowglii.com. All rights reserved.
 //
 
+#import "MoUtils.h"
+
 #import "EventViewController.h"
 #import "EventCenter.h"
 #import "MoThemeView.h"
@@ -102,7 +104,7 @@ const NSTimeInterval kAlertRegularRelativeOffsets[kAlertRegularNumOffsets] = {
     NSDatePicker* (^picker)(void) = ^NSDatePicker* () {
         NSDatePicker *picker = [NSDatePicker new];
         picker.datePickerStyle = NSDatePickerStyleTextField;
-        picker.locale = NSLocale.currentLocale;
+        picker.locale = DisplayLocale();
         picker.bezeled  = NO;
         picker.bordered = NO;
         picker.drawsBackground = NO;

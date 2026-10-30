@@ -43,6 +43,10 @@ Sizer *SizePref = nil;
     return SML_MED_LRG(FONT_SIZE_SMALL, FONT_SIZE_MEDIUM, FONT_SIZE_LARGE);
 }
 
+- (CGFloat)agendaTitleFontSize {
+    return self.fontSize + 1;
+}
+
 - (CGFloat)calendarTitleFontSize {
     return SML_MED_LRG(14, 16, 18);
 }

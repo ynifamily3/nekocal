@@ -3,6 +3,8 @@
 //  Copyright © 2017 mowglii.com. All rights reserved.
 //
 
+#import "MoUtils.h"
+
 #import "HighlightPicker.h"
 
 @implementation HighlightPicker
@@ -23,6 +25,7 @@
         // title that is the localized veryShortSymbol for a
         // day-of-the-week (dow). In English: S M T W T F S.
         NSDateFormatter *formatter = [NSDateFormatter new];
+        formatter.locale = DisplayLocale();
         NSArray *dows = [formatter veryShortWeekdaySymbols];
         NSArray *dowNames = [formatter standaloneWeekdaySymbols];
         NSMutableArray *checkboxes = [NSMutableArray new];
@@ -30,7 +33,7 @@
             NSString *dow = [dows objectAtIndex:i];
             // Make French dow strings lowercase because that is the convention
             // in France. -veryShortWeekdaySymbols should have done this for us.
-            if ([[NSLocale currentLocale].localeIdentifier hasPrefix:@"fr"]) {
+            if ([DisplayLocale().localeIdentifier hasPrefix:@"fr"]) {
                 dow = [dow lowercaseString];
             }
             NSButton *checkbox = [NSButton checkboxWithTitle:dow target:self action:@selector(didClickCheckbox:)];

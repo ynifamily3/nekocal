@@ -48,6 +48,10 @@
 // Only contains events for user's selected (i.e. filtered) calendars.
 - (NSDictionary *)filteredEventsForDate;
 
+// Holiday dates include flagged calendars even when hidden from the agenda.
+- (NSSet<NSDate *> *)holidayDates;
+- (void)updateHolidayCalendarForIdentifier:(NSString *)identifier holiday:(BOOL)holiday;
+
 // When the user selects/unselects calendars in Prefs, we update
 // the list of selected calendars.
 - (void)updateSelectedCalendarsForIdentifier:(NSString *)identifier selected:(BOOL)selected;

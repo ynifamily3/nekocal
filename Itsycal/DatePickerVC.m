@@ -3,6 +3,8 @@
 //  Copyright © 2024 mowglii.com. All rights reserved.
 //
 
+#import "MoUtils.h"
+
 #import "DatePickerVC.h"
 #import "MoThemeView.h"
 #import "MoVFLHelper.h"
@@ -30,7 +32,7 @@
 
     _picker = [NSDatePicker new];
     _picker.datePickerStyle = NSDatePickerStyleTextField;
-    _picker.locale = NSLocale.currentLocale;
+    _picker.locale = DisplayLocale();
     _picker.bezeled  = YES;
     _picker.bordered = NO;
     _picker.drawsBackground = NO;

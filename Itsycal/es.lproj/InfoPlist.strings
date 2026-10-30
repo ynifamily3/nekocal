@@ -1,3 +1,3 @@
-"NSAppleEventsUsageDescription" = "Itsycal utiliza AppleEvents para abrir la aplicación de calendario en el día seleccionado. Puede cambiar esta configuración en Ajustes del Sistema › Privacidad y seguridad › Automatización.";
+"NSAppleEventsUsageDescription" = "KawaiiCal utiliza AppleEvents para abrir la aplicación de calendario en el día seleccionado. Puede cambiar esta configuración en Ajustes del Sistema › Privacidad y seguridad › Automatización.";
 
-"NSCalendarsFullAccessUsageDescription" = "Itsycal es más útil cuando puede mostrar los eventos de sus calendarios. Puede cambiar esta configuración en Ajustes del Sistema › Privacidad y seguridad › Calendarios.";
+"NSCalendarsFullAccessUsageDescription" = "KawaiiCal es más útil cuando puede mostrar los eventos de sus calendarios. Puede cambiar esta configuración en Ajustes del Sistema › Privacidad y seguridad › Calendarios.";

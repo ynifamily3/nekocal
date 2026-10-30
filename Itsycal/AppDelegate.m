@@ -85,8 +85,7 @@
 {
     NSApp.mainMenu = [self mainMenu];
 
-    // Create Sparkle's updater. This starts its update cycle.
-    [SUUpdater sharedUpdater];
+    // Personal builds are updated by rebuilding locally.
 }
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
@@ -198,12 +197,12 @@
     // Itsycal is not being run from /Applications.
     [[NSApplication sharedApplication] activateIgnoringOtherApps:YES];
     NSAlert *alert = [NSAlert new];
-    alert.messageText = NSLocalizedString(@"Move Itsycal to the Applications folder", nil);
-    alert.informativeText = [NSLocalizedString(@"Itsycal must be run from the Applications folder in order to work properly.\n\nPlease quit Itsycal, move it to the Applications folder, and relaunch.", nil) stringByAppendingString:[NSString stringWithFormat:@"\n\n%@", bundlePath]];
+    alert.messageText = NSLocalizedString(@"Move KawaiiCal to the Applications folder", nil);
+    alert.informativeText = [NSLocalizedString(@"KawaiiCal must be run from the Applications folder in order to work properly.\n\nPlease quit KawaiiCal, move it to the Applications folder, and relaunch.", nil) stringByAppendingString:[NSString stringWithFormat:@"\n\n%@", bundlePath]];
     alert.icon = [NSImage imageNamed:@"move"];
     alert.showsHelp = YES;
     alert.delegate = self;
-    [alert addButtonWithTitle:NSLocalizedString(@"Quit Itsycal", @"")];
+    [alert addButtonWithTitle:NSLocalizedString(@"Quit KawaiiCal", @"")];
     [alert runModal];
     [NSApp terminate:nil];
 }
@@ -218,7 +217,7 @@
 - (NSMenu *)mainMenu
 {
     NSMenu *menu = [NSMenu new];
-    [menu addItemWithTitle:@"Quit Itsycal" action:@selector(terminate:) keyEquivalent:@"q"];
+    [menu addItemWithTitle:@"Quit KawaiiCal" action:@selector(terminate:) keyEquivalent:@"q"];
     [menu addItemWithTitle:@"Close" action:@selector(performClose:) keyEquivalent:@"w"];
     // AppKit implements undo: and redo: (in NSWindow and NSTextView),
     // but no public header declares them, so look them up by name.

@@ -6,6 +6,8 @@
 //  Copyright (c) 2014 mowglii.com. All rights reserved.
 //
 
+#import "MoUtils.h"
+
 #import "MoCalendar.h"
 #import "MoCalCell.h"
 #import "MoCalGrid.h"
@@ -58,6 +60,7 @@ NSString * const kMoCalendarNumRows = @"MoCalendarNumRows";
 - (void)commonInitForMoCalendar
 {
     _formatter = [NSDateFormatter new];
+    _formatter.locale = DisplayLocale();
     _tooltipWC = [MoCalToolTipWC new];
 
     _monthLabel = [NSTextField labelWithString:@""];
@@ -138,7 +141,7 @@ NSString * const kMoCalendarNumRows = @"MoCalendarNumRows";
 
 - (BOOL)isOpaque
 {
-    return YES;
+    return NO;
 }
 
 #pragma mark
@@ -291,19 +294,20 @@ NSString * const kMoCalendarNumRows = @"MoCalendarNumRows";
     [_monthLabel setStringValue:[self monthTitle]];
     // Make French dow strings lowercase because that is the convention
     // in France. -veryShortWeekdaySymbols should have done this for us.
-    if ([[NSLocale currentLocale].localeIdentifier hasPrefix:@"fr"]) {
+    if ([DisplayLocale().localeIdentifier hasPrefix:@"fr"]) {
         dows = @[@"d", @"l", @"m", @"m", @"j", @"v", @"s"];
     }
     // macOS gives the English veryShortWeekdaySymbols for Esperanto.
-    else if ([[NSLocale currentLocale].localeIdentifier hasPrefix:@"eo"]) {
+    else if ([DisplayLocale().localeIdentifier hasPrefix:@"eo"]) {
         dows = @[@"D", @"L", @"M", @"M", @"Ĵ", @"V", @"S"];
     }
     for (NSInteger col = 0; col < 7; col++) {
         NSString *dow = [NSString stringWithFormat:@"%@", dows[COL_DOW(self.weekStartDOW, col)]];
         [[_dowGrid.cells[col] textField] setStringValue:dow];
-        [[_dowGrid.cells[col] textField] setTextColor:[self columnIsMemberOfHighlightedDOWs:col] 
-         ? Theme.highlightedDOWTextColor
-         : Theme.DOWTextColor];
+        NSInteger weekday=COL_DOW(self.weekStartDOW, col);
+        NSColor *color=weekday==0 ? NSColor.systemRedColor : (weekday==6 ? NSColor.systemBlueColor
+            : ([self columnIsMemberOfHighlightedDOWs:col] ? Theme.highlightedDOWTextColor : Theme.DOWTextColor));
+        [[_dowGrid.cells[col] textField] setTextColor:color];
     }
     
     // Get the first of the month.
@@ -355,6 +359,7 @@ NSString * const kMoCalendarNumRows = @"MoCalendarNumRows";
 - (void)reloadData
 {
     for (MoCalCell *c in _dateGrid.cells) {
+        c.isHoliday = [self.delegate isHolidayForDate:c.date];
         c.dotColors = self.showEventDots
             ? [self.delegate dotColorsForDate:c.date useColor:self.useColoredDots]
             : nil;
@@ -675,7 +680,13 @@ NSString * const kMoCalendarNumRows = @"MoCalendarNumRows";
 - (NSString *)monthTitle
 {
     NSArray *months = [_formatter shortMonthSymbols];
-    NSString *title = [NSString stringWithFormat:@"%@ %zd", months[self.monthDate.month], self.monthDate.year];
+    NSString *title;
+    NSLocale *locale = _formatter.locale ?: NSLocale.currentLocale;
+    if ([[locale objectForKey:NSLocaleLanguageCode] isEqualToString:@"ko"]) {
+        title = [NSString stringWithFormat:@"%zd년 %zd월", self.monthDate.year, self.monthDate.month + 1];
+    } else {
+        title = [NSString stringWithFormat:@"%@ %zd", months[self.monthDate.month], self.monthDate.year];
+    }
 #ifdef DEBUG
     // Mark debug builds so they're easy to tell apart from release builds.
     title = [title stringByAppendingString:@" ✱"];
@@ -723,6 +734,7 @@ NSString * const kMoCalendarNumRows = @"MoCalendarNumRows";
 
 - (void)handleLocaleNotification:(NSNotification *)notification
 {
+    _formatter.locale = DisplayLocale();
     // Redraw calendar with locale-specific month and DOW headers
     [self updateCalendar];
 }
@@ -766,9 +778,6 @@ NSString * const kMoCalendarNumRows = @"MoCalendarNumRows";
 
 - (void)drawRect:(NSRect)dirtyRect
 {
-    [Theme.mainBackgroundColor set];
-    NSRectFill(self.bounds);
-    
     CGFloat radius = SizePref.cellRadius + 3;
     CGFloat sz = SizePref.cellSize;
     if (self.highlightedDOWs) {

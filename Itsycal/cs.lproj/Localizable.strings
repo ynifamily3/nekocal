@@ -18,7 +18,7 @@
 "15 minutes before" = "15 minut předem";
 "30 minutes before" = "30 minut předem";
 "31 days" = "31 dnů";
-"About Itsycal" = "O aplikaci Itsycal";
+"About KawaiiCal" = "O aplikaci KawaiiCal";
 /* About prefs tab label */
 "About" = "O aplikaci";
 "Add Location or Video Call" = "Přidejte místo nebo videohovor";
@@ -36,9 +36,9 @@
 "Calendar" = "Kalendář";
 "Calendar access denied.
 
-Itsycal is more useful when it can display events from your calendars. You can change this setting in System Settings › Privacy & Security › Calendars" = "Přístup ke kalendáři byl odepřen.
+KawaiiCal is more useful when it can display events from your calendars. You can change this setting in System Settings › Privacy & Security › Calendars" = "Přístup ke kalendáři byl odepřen.
 
-Itsycal je užitečnější, pokud může zobrazovat události z vašich kalendářů. Toto nastavení můžete změnit v Nastavení systému › Soukromí a zabezpečení › Kalendáře";
+KawaiiCal je užitečnější, pokud může zobrazovat události z vašich kalendářů. Toto nastavení můžete změnit v Nastavení systému › Soukromí a zabezpečení › Kalendáře";
 "Calendar access was denied." = "Přístup ke kalendáři byl odepřen.";
 /* Accessibility description for menu bar icon showing a grid of days */
 "Calendar grid" = "Mřížka kalendáře";
@@ -82,15 +82,15 @@ Itsycal je užitečnější, pokud může zobrazovat události z vašich kalend
 "Help…" = "Nápověda…";
 "Hide icon" = "Skrýt ikonu";
 "Highlight:" = "Zvýraznit:";
-"Itsycal cannot create a new event unless there is at least one calendar you have permission to modify." = "Itsycal nemůže vytvořit novou událost, pokud nemáte oprávnění k úpravám alespoň v jednom kalendáři.";
-/* Accessibility description for menu bar icon showing the Itsycal face */
-"Itsycal face" = "Obličej Itsycal";
-"Itsycal is more useful when you allow it to add events to your calendars. You can change this setting in System Settings › Privacy & Security › Calendars." = "Itsycal je užitečnější, pokud mu povolíte přidávat události do vašich kalendářů. Toto nastavení můžete změnit v Nastavení systému › Soukromí a zabezpečení › Kalendáře.";
-"Itsycal must be run from the Applications folder in order to work properly.
+"KawaiiCal cannot create a new event unless there is at least one calendar you have permission to modify." = "KawaiiCal nemůže vytvořit novou událost, pokud nemáte oprávnění k úpravám alespoň v jednom kalendáři.";
+/* Accessibility description for menu bar icon showing the KawaiiCal face */
+"KawaiiCal face" = "Obličej KawaiiCal";
+"KawaiiCal is more useful when you allow it to add events to your calendars. You can change this setting in System Settings › Privacy & Security › Calendars." = "KawaiiCal je užitečnější, pokud mu povolíte přidávat události do vašich kalendářů. Toto nastavení můžete změnit v Nastavení systému › Soukromí a zabezpečení › Kalendáře.";
+"KawaiiCal must be run from the Applications folder in order to work properly.
 
-Please quit Itsycal, move it to the Applications folder, and relaunch." = "Má-li Itsycal fungovat správně, je nutné jej spustit ze složky „Aplikace“.
+Please quit KawaiiCal, move it to the Applications folder, and relaunch." = "Má-li KawaiiCal fungovat správně, je nutné jej spustit ze složky „Aplikace“.
 
-Ukončete prosím Itsycal, přesuňte jej do složky „Aplikace“ a znovu jej spusťte.";
+Ukončete prosím KawaiiCal, přesuňte jej do složky „Aplikace“ a znovu jej spusťte.";
 "Keyboard shortcut" = "Klávesová zkratka";
 /* Large text size */
 "Large" = "Velká";
@@ -105,7 +105,7 @@ Ukončete prosím Itsycal, přesuňte jej do složky „Aplikace“ a znovu jej
 /* Accessibility label for menu bar icon picker */
 "Menu bar icon" = "Ikona v řádku nabídek";
 "Monday" = "pondělí";
-"Move Itsycal to the Applications folder" = "Přesuňte Itsycal do složky Aplikace";
+"Move KawaiiCal to the Applications folder" = "Přesuňte KawaiiCal do složky Aplikace";
 /* Repeat ends never */
 "Never" = "Nikdy";
 "New Event" = "Nová událost";
@@ -122,8 +122,8 @@ Ukončete prosím Itsycal, přesuňte jej do složky „Aplikace“ a znovu jej
 "Outline current month" = "Ohraničit aktuální měsíc";
 /* Accessibility description for menu bar icon with the date in an outlined square */
 "Outlined date" = "Datum s obrysem";
-"Pin Itsycal   P" = "Přišpendlit Itsycal   P";
-"Quit Itsycal" = "Ukončit Itsycal";
+"Pin KawaiiCal   P" = "Přišpendlit KawaiiCal   P";
+"Quit KawaiiCal" = "Ukončit KawaiiCal";
 "Repeat:" = "Opakovat:";
 "Saturday" = "sobota";
 "Save Event" = "Uložit událost";

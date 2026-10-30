@@ -27,6 +27,7 @@ static NSURL *MeetingURLForEvent(EKEvent *event); // see below
 
 @implementation EventCenter {                      // Accessed on:
     EKEventStore         *_store;
+    NSSet<NSDate *>       *_holidayDates; // _queueIsol
     NSCalendar           *_cal;
     NSMutableDictionary  *_eventsForDate;          // _queueWork
     NSDictionary         *_filteredEventsForDate;  // _queueIsol
@@ -138,6 +139,19 @@ static NSURL *MeetingURLForEvent(EKEvent *event); // see below
         sourcesAndCalendars = [self->_sourcesAndCalendars copy];
     });
     return sourcesAndCalendars;
+}
+
+- (NSSet<NSDate *> *)holidayDates {
+    __block NSSet *dates;
+    dispatch_sync(_queueIsol, ^{ dates = self->_holidayDates; });
+    return dates ?: [NSSet set];
+}
+
+- (void)updateHolidayCalendarForIdentifier:(NSString *)identifier holiday:(BOOL)holiday {
+    NSMutableSet *ids=[NSMutableSet setWithArray:[NSUserDefaults.standardUserDefaults arrayForKey:@"HolidayCalendarIdentifiers"] ?: @[]];
+    if(holiday) [ids addObject:identifier]; else [ids removeObject:identifier];
+    [NSUserDefaults.standardUserDefaults setObject:ids.allObjects forKey:@"HolidayCalendarIdentifiers"];
+    dispatch_async(_queueWork, ^{ [self _filterEvents]; });
 }
 
 - (NSDictionary *)filteredEventsForDate {
@@ -363,9 +377,12 @@ static NSURL *MeetingURLForEvent(EKEvent *event); // see below
 - (void)_filterEvents {
     //os_log(OS_LOG_DEFAULT, " %s", __FUNCTION__);
     NSMutableDictionary *filteredEventsForDate = [NSMutableDictionary new];
+    NSSet *holidayIDs=[NSSet setWithArray:[NSUserDefaults.standardUserDefaults arrayForKey:@"HolidayCalendarIdentifiers"] ?: @[]];
+    NSMutableSet *holidayDates=[NSMutableSet new];
     NSArray *selectedCalendars = [[NSUserDefaults standardUserDefaults] arrayForKey:kSelectedCalendars];
     for (NSDate *date in _eventsForDate) {
         for (EventInfo *info in _eventsForDate[date]) {
+            if ([holidayIDs containsObject:info.event.calendar.calendarIdentifier]) [holidayDates addObject:date];
             if ([selectedCalendars containsObject:info.event.calendar.calendarIdentifier]) {
                 if (filteredEventsForDate[date] == nil) {
                     filteredEventsForDate[date] = [NSMutableArray new];
@@ -390,6 +407,7 @@ static NSURL *MeetingURLForEvent(EKEvent *event); // see below
     // reads it back via -filteredEventsForDate.
     dispatch_async(_queueIsol, ^{
         self->_filteredEventsForDate = [filteredEventsForDate copy];
+        self->_holidayDates = holidayDates.copy;
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.delegate eventCenterEventsChanged];
         });

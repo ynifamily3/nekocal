@@ -25,7 +25,7 @@ static NSString *kEventCellIdentifier = @"EventCell";
 @property (nonatomic) BOOL isHovered;
 @end
 
-@interface AgendaDateCell : NSView
+@interface AgendaDateCell : NSVisualEffectView
 @property (nonatomic) NSTextField *dayTextField;
 @property (nonatomic) NSTextField *DOWTextField;
 @property (nonatomic, weak) NSDate *date;
@@ -91,7 +91,7 @@ static NSString *kEventCellIdentifier = @"EventCell";
     tvContainer.drawsBackground = NO;
     tvContainer.hasVerticalScroller = YES;
     tvContainer.documentView = _tv;
-    tvContainer.verticalScroller = [ThemedScroller new];
+    tvContainer.verticalScroller = [NSScroller new];
     
     [v addSubview:tvContainer];
     [v addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[tv]|" options:0 metrics:nil views:@{@"tv": tvContainer}]];
@@ -393,6 +393,14 @@ static NSString *kEventCellIdentifier = @"EventCell";
             cell.dayTextField.textColor = NSColor.tertiaryLabelColor;
             cell.DOWTextField.textColor = NSColor.tertiaryLabelColor;
         }
+        NSInteger weekday=[self.nsCal component:NSCalendarUnitWeekday fromDate:obj]-1;
+        BOOL holiday=[self.holidayDates containsObject:[self.nsCal startOfDayForDate:obj]];
+        NSColor *special=(holiday || weekday==0) ? NSColor.systemRedColor : (weekday==6 ? NSColor.systemBlueColor : nil);
+        if(special) {
+            special=[special colorWithAlphaComponent:[(NSDate *)obj hasNoEvents] ? 0.5 : 1.0];
+            cell.dayTextField.textColor=special;
+            cell.DOWTextField.textColor=special;
+        }
         v = cell;
     }
     else {
@@ -510,6 +518,7 @@ static NSString *kEventCellIdentifier = @"EventCell";
     if (dateFormatter == nil) {
         dateFormatter = [NSDateFormatter new];
     }
+    dateFormatter.locale = DisplayLocale();
     dateFormatter.timeZone = [NSTimeZone localTimeZone];
     [dateFormatter setLocalizedDateFormatFromTemplate:@"dMMM"];
     return [dateFormatter stringFromDate:date];
@@ -521,6 +530,7 @@ static NSString *kEventCellIdentifier = @"EventCell";
     if (dateFormatter == nil) {
         dateFormatter = [NSDateFormatter new];
     }
+    dateFormatter.locale = DisplayLocale();
     dateFormatter.timeZone = [NSTimeZone localTimeZone];
     if ([self.nsCal isDateInToday:date] || [self.nsCal isDateInTomorrow:date]) {
         dateFormatter.doesRelativeDateFormatting = YES;
@@ -565,6 +575,7 @@ static NSString *kEventCellIdentifier = @"EventCell";
     NSString *title = @"";
     NSString *location = @"";
     NSString *duration = @"";
+    timeFormatter.locale = DisplayLocale();
     timeFormatter.timeZone  = [NSTimeZone localTimeZone];
     intervalFormatter.timeZone = nil; // Force tz update on macOS 10.13
     intervalFormatter.timeZone  = [NSTimeZone localTimeZone];
@@ -597,7 +608,10 @@ static NSString *kEventCellIdentifier = @"EventCell";
         else if (info.isEndDate == YES) {
             if (info.event.endDate != nil) {
                 NSString *ends = NSLocalizedString(@"ends", @"Spanning event ends");
-                duration = [NSString stringWithFormat:@"%@ %@", ends, [timeFormatter stringFromDate:info.event.endDate]];
+                NSString *time = [timeFormatter stringFromDate:info.event.endDate];
+                duration = [DisplayLocale().languageCode isEqualToString:@"ko"]
+                    ? [NSString stringWithFormat:@"%@ %@", time, ends]
+                    : [NSString stringWithFormat:@"%@ %@", ends, time];
             }
         }
         else {
@@ -719,22 +733,25 @@ static NSString *kEventCellIdentifier = @"EventCell";
     self = [super init];
     if (self) {
         self.identifier = kDateCellIdentifier;
+        self.material = NSVisualEffectMaterialHeaderView;
+        self.blendingMode = NSVisualEffectBlendingModeWithinWindow;
+        self.state = NSVisualEffectStateActive;
         _dayTextField = [NSTextField labelWithString:@""];
         _dayTextField.translatesAutoresizingMaskIntoConstraints = NO;
-        _dayTextField.font = [NSFont systemFontOfSize:SizePref.fontSize weight:NSFontWeightSemibold];
+        _dayTextField.font = [NSFont systemFontOfSize:SizePref.agendaTitleFontSize weight:NSFontWeightSemibold];
         _dayTextField.textColor = Theme.agendaDayTextColor;
         [_dayTextField setContentHuggingPriority:NSLayoutPriorityDefaultHigh forOrientation:NSLayoutConstraintOrientationHorizontal];
         
         _DOWTextField = [NSTextField labelWithString:@""];
         _DOWTextField.translatesAutoresizingMaskIntoConstraints = NO;
-        _DOWTextField.font = [NSFont systemFontOfSize:SizePref.fontSize weight:NSFontWeightSemibold];
+        _DOWTextField.font = [NSFont systemFontOfSize:SizePref.agendaTitleFontSize weight:NSFontWeightSemibold];
         _DOWTextField.textColor = Theme.agendaDOWTextColor;
 
         [self addSubview:_dayTextField];
         [self addSubview:_DOWTextField];
         MoVFLHelper *vfl = [[MoVFLHelper alloc] initWithSuperview:self metrics:nil views:NSDictionaryOfVariableBindings(_dayTextField, _DOWTextField)];
         [vfl :@"H:|-10-[_DOWTextField]-(>=4)-[_dayTextField]-10-|" :NSLayoutFormatAlignAllLastBaseline];
-        [vfl :@"V:|-6-[_dayTextField]-1-|"];
+        [vfl :@"V:|-7-[_dayTextField]-3-|"];
         
         REGISTER_FOR_SIZE_CHANGE;
     }
@@ -748,15 +765,14 @@ static NSString *kEventCellIdentifier = @"EventCell";
 
 - (void)sizeChanged:(id)sender
 {
-    _dayTextField.font = [NSFont systemFontOfSize:SizePref.fontSize weight:NSFontWeightSemibold];
-    _DOWTextField.font = [NSFont systemFontOfSize:SizePref.fontSize weight:NSFontWeightSemibold];
+    _dayTextField.font = [NSFont systemFontOfSize:SizePref.agendaTitleFontSize weight:NSFontWeightSemibold];
+    _DOWTextField.font = [NSFont systemFontOfSize:SizePref.agendaTitleFontSize weight:NSFontWeightSemibold];
 }
 
 - (void)drawRect:(NSRect)dirtyRect
 {
-    // Must be opaque so rows can scroll under it.
-    [Theme.mainBackgroundColor set];
-    NSRectFillUsingOperation(self.bounds, NSCompositingOperationSourceOver);
+    // AppKit provides a material backdrop for the sticky date heading.
+    [super drawRect:dirtyRect];
     NSRect r = NSMakeRect(10, self.bounds.size.height - 4, self.bounds.size.width - 20, 1);
     [Theme.agendaDividerColor set];
     NSRectFillUsingOperation(r, NSCompositingOperationSourceOver);
@@ -786,6 +802,7 @@ static NSString *kEventCellIdentifier = @"EventCell";
     if (self) {
         self.identifier = kEventCellIdentifier;
         _titleTextField = label();
+        _titleTextField.font = [NSFont systemFontOfSize:SizePref.agendaTitleFontSize weight:NSFontWeightMedium];
         _titleTextField.maximumNumberOfLines = 1;
         _locationTextField = label();
         _locationTextField.maximumNumberOfLines = 2;
@@ -826,12 +843,12 @@ static NSString *kEventCellIdentifier = @"EventCell";
                                                 @[_locationTextField],
                                                 @[durationGrid]]];
         _grid.translatesAutoresizingMaskIntoConstraints = NO;
-        _grid.rowSpacing = 0;
+        _grid.rowSpacing = 2;
         [self addSubview:_grid];
         
         MoVFLHelper *vfl = [[MoVFLHelper alloc] initWithSuperview:self metrics:nil views:NSDictionaryOfVariableBindings(_grid)];
         [vfl :@"H:[_grid]-11-|"];
-        [vfl :@"V:|-3-[_grid]-3-|"];
+        [vfl :@"V:|-4-[_grid]-4-|"];
         
         CGFloat leadingConstant = SizePref.agendaEventLeadingMargin;
         _gridLeadingConstraint = [_grid.leadingAnchor constraintEqualToAnchor:self.leadingAnchor constant:leadingConstant];
@@ -854,7 +871,7 @@ static NSString *kEventCellIdentifier = @"EventCell";
     _gridLeadingConstraint.constant = SizePref.agendaEventLeadingMargin;
     _btnVideo.image = [NSImage imageNamed:SizePref.videoImageName];
     _btnVideo.image.template = YES;
-    _titleTextField.font = [NSFont systemFontOfSize:SizePref.fontSize];
+    _titleTextField.font = [NSFont systemFontOfSize:SizePref.agendaTitleFontSize weight:NSFontWeightMedium];
     _locationTextField.font = [NSFont systemFontOfSize:SizePref.fontSize];
     _durationTextField.font = [NSFont systemFontOfSize:SizePref.fontSize];
 }
@@ -925,7 +942,7 @@ static NSString *kEventCellIdentifier = @"EventCell";
     // Stroke for tentative and pending events, otherwise fill.
     CGFloat alpha = self.dim ? 0.5 : 1;
     CGFloat x = 11;
-    CGFloat yOffset = SizePref.fontSize + 2;
+    CGFloat yOffset = SizePref.agendaTitleFontSize + 3;
     CGFloat dotWidthX = SizePref.agendaDotWidth;
     CGFloat dotWidthY = dotWidthX;
     CGFloat radius = dotWidthX / 2.0;

@@ -14,6 +14,7 @@
 @property (nonatomic) NSTextField *textField;
 @property (nonatomic) MoDate date;
 @property (nonatomic) BOOL isToday;
+@property (nonatomic) BOOL isHoliday;
 @property (nonatomic) BOOL isHighlighted;
 @property (nonatomic) BOOL isInCurrentMonth;
 @property (nonatomic) BOOL isHovered;

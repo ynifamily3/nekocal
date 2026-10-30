@@ -4,6 +4,8 @@
 //
 
 #import "PrefsGeneralVC.h"
+#import "SettingsStyle.h"
+#import "KoreanShortcutView.h"
 #import "Itsycal.h"
 #import "MoLoginItem.h"
 #import "MoVFLHelper.h"
@@ -47,7 +49,7 @@
     NSTextField *shortcutLabel = label(NSLocalizedString(@"Keyboard shortcut", @""));
 
     // Shortcut view
-    MASShortcutView *shortcutView = [MASShortcutView new];
+    MASShortcutView *shortcutView = [KoreanShortcutView new];
     [shortcutView setAssociatedUserDefaultsKey:kKeyboardShortcut withTransformerName:MASDictionaryTransformerName];
     [v addSubview:shortcutView];
 
@@ -65,20 +67,25 @@
     [positionPopup.cell setAccessibilityTitleUIElement:positionLabel.cell];
     [v addSubview:positionPopup];
 
-    MoVFLHelper *vfl = [[MoVFLHelper alloc] initWithSuperview:v metrics:@{@"m": @20} views:NSDictionaryOfVariableBindings(_login, checkUpdates, beepBeep, shortcutLabel, shortcutView, positionLabel, positionPopup)];
-    [vfl :@"V:|-m-[_login]-[checkUpdates]-[beepBeep]-m-[shortcutLabel]-3-[shortcutView(25)]-30-[positionPopup]-m-|"];
-    [vfl :@"H:|-m-[_login]-(>=m)-|"];
-    [vfl :@"H:|-m-[checkUpdates]-(>=m)-|"];
-    [vfl :@"H:|-m-[beepBeep]-(>=m)-|"];
-    [vfl :@"H:|-(>=m)-[shortcutLabel]-(>=m)-|"];
-    [vfl :@"H:|-m-[shortcutView(>=220)]-m-|"];
-    [vfl :@"H:|-m-[positionLabel]-[positionPopup]-(>=m)-|" :NSLayoutFormatAlignAllFirstBaseline];
-
-    // Center shortcutLabel
-    [v addConstraint:[NSLayoutConstraint constraintWithItem:shortcutLabel attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:v attribute:NSLayoutAttributeCenterX multiplier:1 constant:0]];
-
-    // Binding for Sparkle automatic update checks
-    [checkUpdates bind:@"value" toObject:[SUUpdater sharedUpdater] withKeyPath:@"automaticallyChecksForUpdates" options:@{NSContinuouslyUpdatesValueBindingOption: @(YES)}];
+    [checkUpdates removeFromSuperview];
+    SettingsCard *launch=[SettingsCard new], *behavior=[SettingsCard new];
+    [v addSubview:launch]; [v addSubview:behavior];
+    NSTextField *launchTitle=[NSTextField labelWithString:@"실행과 알림"];
+    NSTextField *behaviorTitle=[NSTextField labelWithString:@"단축키와 창 위치"];
+    launchTitle.font=behaviorTitle.font=[NSFont systemFontOfSize:13 weight:NSFontWeightSemibold];
+    for(NSView *item in @[launchTitle,_login,beepBeep]) [launch addSubview:item];
+    for(NSView *item in @[behaviorTitle,shortcutLabel,shortcutView,positionLabel,positionPopup]) [behavior addSubview:item];
+    MoVFLHelper *outer=[[MoVFLHelper alloc] initWithSuperview:v metrics:@{@"m":@24} views:NSDictionaryOfVariableBindings(launch,behavior)];
+    [outer :@"H:|-m-[launch]-m-|"]; [outer :@"H:|-m-[behavior]-m-|"];
+    [outer :@"V:|-m-[launch]-16-[behavior]-m-|"];
+    MoVFLHelper *a=[[MoVFLHelper alloc] initWithSuperview:launch metrics:nil views:NSDictionaryOfVariableBindings(launchTitle,_login,beepBeep)];
+    [a :@"V:|-16-[launchTitle]-14-[_login]-10-[beepBeep]-16-|"];
+    for(NSString *f in @[@"H:|-16-[launchTitle]-(>=16)-|",@"H:|-16-[_login]-(>=16)-|",@"H:|-16-[beepBeep]-(>=16)-|"]) [a :f];
+    MoVFLHelper *b=[[MoVFLHelper alloc] initWithSuperview:behavior metrics:nil views:NSDictionaryOfVariableBindings(behaviorTitle,shortcutLabel,shortcutView,positionLabel,positionPopup)];
+    [b :@"V:|-16-[behaviorTitle]-16-[shortcutView(25)]-14-[positionPopup]-16-|"];
+    [b :@"H:|-16-[behaviorTitle]-(>=16)-|"];
+    [b :@"H:|-16-[shortcutLabel(112)]-12-[shortcutView(>=180)]-16-|" :NSLayoutFormatAlignAllCenterY];
+    [b :@"H:|-16-[positionLabel(112)]-12-[positionPopup]-16-|" :NSLayoutFormatAlignAllCenterY];
 
     // Binding for hourly beep
     [beepBeep bind:@"value" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:[@"values." stringByAppendingString:kBeepBeepOnTheHour] options:@{NSContinuouslyUpdatesValueBindingOption: @(YES)}];

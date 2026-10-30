@@ -87,8 +87,18 @@
     [self setNeedsDisplay:YES];
 }
 
+- (void)setIsHoliday:(BOOL)isHoliday {
+    _isHoliday = isHoliday;
+    [self updateTextColor];
+}
+
 - (void)updateTextColor {
-    self.textField.textColor = self.isInCurrentMonth ? Theme.currentMonthTextColor : Theme.noncurrentMonthTextColor;
+    NSInteger weekday=(self.date.julian+1)%7; // Sunday=0, independent of column order.
+    NSColor *special=(self.isHoliday || weekday==0) ? NSColor.systemRedColor
+        : (weekday==6 ? NSColor.systemBlueColor : nil);
+    self.textField.textColor = special
+        ? [special colorWithAlphaComponent:self.isInCurrentMonth ? 1.0 : 0.5]
+        : (self.isInCurrentMonth ? Theme.currentMonthTextColor : Theme.noncurrentMonthTextColor);
 }
 
 - (void)drawRect:(NSRect)dirtyRect

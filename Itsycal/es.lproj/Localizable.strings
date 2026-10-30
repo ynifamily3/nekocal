@@ -18,7 +18,7 @@
 "15 minutes before" = "15 minutos antes";
 "30 minutes before" = "30 minutos antes";
 "31 days" = "31 días";
-"About Itsycal" = "Acerca de Itsycal";
+"About KawaiiCal" = "Acerca de KawaiiCal";
 /* About prefs tab label */
 "About" = "Acerca de";
 "Add Location or Video Call" = "Agregar ubicación o llamada de video";
@@ -36,9 +36,9 @@
 "Calendar" = "Calendario";
 "Calendar access denied.
 
-Itsycal is more useful when it can display events from your calendars. You can change this setting in System Settings › Privacy & Security › Calendars" = "Acceso denegado.
+KawaiiCal is more useful when it can display events from your calendars. You can change this setting in System Settings › Privacy & Security › Calendars" = "Acceso denegado.
 
-Itsycal es más útil cuando puede mostrar los eventos de sus calendarios. Puede cambiar esta configuración en Ajustes del Sistema › Privacidad y seguridad › Calendarios";
+KawaiiCal es más útil cuando puede mostrar los eventos de sus calendarios. Puede cambiar esta configuración en Ajustes del Sistema › Privacidad y seguridad › Calendarios";
 "Calendar access was denied." = "Acceso denegado.";
 /* Accessibility description for menu bar icon showing a grid of days */
 "Calendar grid" = "Cuadrícula de calendario";
@@ -82,15 +82,15 @@ Itsycal es más útil cuando puede mostrar los eventos de sus calendarios. Puede
 "Help…" = "Ayuda…";
 "Hide icon" = "Ocultar icono";
 "Highlight:" = "Resaltar:";
-"Itsycal cannot create a new event unless there is at least one calendar you have permission to modify." = "Itsycal no puede crear un nuevo evento si no hay al menos un calendario con permisos para ser modificado.";
-/* Accessibility description for menu bar icon showing the Itsycal face */
-"Itsycal face" = "Cara de Itsycal";
-"Itsycal is more useful when you allow it to add events to your calendars. You can change this setting in System Settings › Privacy & Security › Calendars." = "Itsycal es más útil cuando le permite agregar eventos a sus calendarios. Puede cambiar esta configuración en Ajustes del Sistema › Privacidad y seguridad › Calendarios.";
-"Itsycal must be run from the Applications folder in order to work properly.
+"KawaiiCal cannot create a new event unless there is at least one calendar you have permission to modify." = "KawaiiCal no puede crear un nuevo evento si no hay al menos un calendario con permisos para ser modificado.";
+/* Accessibility description for menu bar icon showing the KawaiiCal face */
+"KawaiiCal face" = "Cara de KawaiiCal";
+"KawaiiCal is more useful when you allow it to add events to your calendars. You can change this setting in System Settings › Privacy & Security › Calendars." = "KawaiiCal es más útil cuando le permite agregar eventos a sus calendarios. Puede cambiar esta configuración en Ajustes del Sistema › Privacidad y seguridad › Calendarios.";
+"KawaiiCal must be run from the Applications folder in order to work properly.
 
-Please quit Itsycal, move it to the Applications folder, and relaunch." = "Itsycal se debe ejecutar desde la carpeta Aplicaciones con el fin de funcionar correctamente.
+Please quit KawaiiCal, move it to the Applications folder, and relaunch." = "KawaiiCal se debe ejecutar desde la carpeta Aplicaciones con el fin de funcionar correctamente.
 
-Por favor, cerrar Itsycal, trasladar a la carpeta Aplicaciones, y volver a arrancar.";
+Por favor, cerrar KawaiiCal, trasladar a la carpeta Aplicaciones, y volver a arrancar.";
 "Keyboard shortcut" = "Atajo de teclado";
 /* Large text size */
 "Large" = "Grande";
@@ -105,7 +105,7 @@ Por favor, cerrar Itsycal, trasladar a la carpeta Aplicaciones, y volver a arran
 /* Accessibility label for menu bar icon picker */
 "Menu bar icon" = "Icono de la barra de menús";
 "Monday" = "Lunes";
-"Move Itsycal to the Applications folder" = "Trasladar Itsycal a la carpeta Aplicaciones";
+"Move KawaiiCal to the Applications folder" = "Trasladar KawaiiCal a la carpeta Aplicaciones";
 /* Repeat ends never */
 "Never" = "Nunca";
 "New Event" = "Nuevo evento";
@@ -122,8 +122,8 @@ Por favor, cerrar Itsycal, trasladar a la carpeta Aplicaciones, y volver a arran
 "Outline current month" = "Delinear el mes actual";
 /* Accessibility description for menu bar icon with the date in an outlined square */
 "Outlined date" = "Fecha con contorno";
-"Pin Itsycal   P" = "Mantener Itsycal   P";
-"Quit Itsycal" = "Salir de Itsycal";
+"Pin KawaiiCal   P" = "Mantener KawaiiCal   P";
+"Quit KawaiiCal" = "Salir de KawaiiCal";
 "Repeat:" = "Repetir:";
 "Saturday" = "Sábado";
 "Save Event" = "Salvar Evento";

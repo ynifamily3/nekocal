@@ -18,7 +18,7 @@
 "15 minutes before" = "15분 전";
 "30 minutes before" = "30분 전";
 "31 days" = "31일";
-"About Itsycal" = "Itsycal 정보";
+"About KawaiiCal" = "KawaiiCal 정보";
 /* About prefs tab label */
 "About" = "정보";
 "Add Location or Video Call" = "위치 또는 화상 통화 추가";
@@ -36,9 +36,9 @@
 "Calendar" = "캘린더";
 "Calendar access denied.
 
-Itsycal is more useful when it can display events from your calendars. You can change this setting in System Settings › Privacy & Security › Calendars" = "시스템 설정 › 개인정보 보호 및 보안 › 캘린더에서 캘린더 접근을 허용해 주세요.
+KawaiiCal is more useful when it can display events from your calendars. You can change this setting in System Settings › Privacy & Security › Calendars" = "시스템 설정 › 개인정보 보호 및 보안 › 캘린더에서 캘린더 접근을 허용해 주세요.
 
-Itsycal은 캘린더 이벤트를 보여줄 수 있을 때 더 유용해요.";
+KawaiiCal은 캘린더 이벤트를 보여줄 수 있을 때 더 유용해요.";
 "Calendar access was denied." = "캘린더 접근을 허용해 주세요.";
 /* Accessibility description for menu bar icon showing a grid of days */
 "Calendar grid" = "캘린더 격자";
@@ -82,15 +82,15 @@ Itsycal은 캘린더 이벤트를 보여줄 수 있을 때 더 유용해요.";
 "Help…" = "도움말…";
 "Hide icon" = "아이콘 숨기기";
 "Highlight:" = "강조:";
-"Itsycal cannot create a new event unless there is at least one calendar you have permission to modify." = "새 이벤트를 만들려면 수정할 수 있는 캘린더가 하나 이상 필요해요.";
-/* Accessibility description for menu bar icon showing the Itsycal face */
-"Itsycal face" = "Itsycal 얼굴";
-"Itsycal is more useful when you allow it to add events to your calendars. You can change this setting in System Settings › Privacy & Security › Calendars." = "캘린더 접근을 허용해 주세요. Itsycal이 캘린더에 이벤트를 추가할 수 있으면 더 편하게 쓸 수 있어요.";
-"Itsycal must be run from the Applications folder in order to work properly.
+"KawaiiCal cannot create a new event unless there is at least one calendar you have permission to modify." = "새 이벤트를 만들려면 수정할 수 있는 캘린더가 하나 이상 필요해요.";
+/* Accessibility description for menu bar icon showing the KawaiiCal face */
+"KawaiiCal face" = "고양이 아이콘";
+"KawaiiCal is more useful when you allow it to add events to your calendars. You can change this setting in System Settings › Privacy & Security › Calendars." = "캘린더 접근을 허용해 주세요. KawaiiCal이 캘린더에 이벤트를 추가할 수 있으면 더 편하게 쓸 수 있어요.";
+"KawaiiCal must be run from the Applications folder in order to work properly.
 
-Please quit Itsycal, move it to the Applications folder, and relaunch." = "Itsycal을 제대로 쓰려면 응용 프로그램 폴더로 옮겨 주세요.
+Please quit KawaiiCal, move it to the Applications folder, and relaunch." = "KawaiiCal을 제대로 쓰려면 응용 프로그램 폴더로 옮겨 주세요.
 
-Itsycal을 종료한 뒤 응용 프로그램 폴더로 옮기고 다시 열어 주세요.";
+KawaiiCal을 종료한 뒤 응용 프로그램 폴더로 옮기고 다시 열어 주세요.";
 "Keyboard shortcut" = "키보드 단축키";
 /* Large text size */
 "Large" = "크게";
@@ -105,9 +105,9 @@ Itsycal을 종료한 뒤 응용 프로그램 폴더로 옮기고 다시 열어 �
 /* Accessibility label for menu bar icon picker */
 "Menu bar icon" = "메뉴 막대 아이콘";
 "Monday" = "월요일";
-"Move Itsycal to the Applications folder" = "Itsycal을 응용 프로그램 폴더로 옮겨 주세요";
+"Move KawaiiCal to the Applications folder" = "KawaiiCal을 응용 프로그램 폴더로 옮겨 주세요";
 /* Repeat ends never */
-"Never" = "안 함";
+"Never" = "종료 없음";
 "New Event" = "새 이벤트";
 "New Event   ⌘N" = "새 이벤트   ⌘N";
 "No events" = "이벤트 없음";
@@ -122,8 +122,8 @@ Itsycal을 종료한 뒤 응용 프로그램 폴더로 옮기고 다시 열어 �
 "Outline current month" = "현재 월 외곽선 표시";
 /* Accessibility description for menu bar icon with the date in an outlined square */
 "Outlined date" = "윤곽선 날짜";
-"Pin Itsycal   P" = "Itsycal 고정하기   P";
-"Quit Itsycal" = "Itsycal 종료";
+"Pin KawaiiCal   P" = "KawaiiCal 고정하기   P";
+"Quit KawaiiCal" = "KawaiiCal 종료";
 "Repeat:" = "반복:";
 "Saturday" = "토요일";
 "Save Event" = "이벤트 저장하기";

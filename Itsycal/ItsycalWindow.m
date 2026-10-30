@@ -15,7 +15,25 @@ static const CGFloat kArrowHeight  = 8;
 static const CGFloat kCornerRadius = 16;
 static const CGFloat kVerticalPadding = 11;
 
-@interface ItsycalWindowFrameView : NSView
+// A noninteractive tint reduces wallpaper bleed without dimming the text.
+@interface PopupTintView : NSView
+@property (nonatomic, readonly) NSColor *tintColor;
+@end
+@implementation PopupTintView
+- (BOOL)allowsVibrancy { return NO; }
+- (NSView *)hitTest:(NSPoint)point { return nil; }
+- (NSColor *)tintColor { return [Theme.mainBackgroundColor colorWithAlphaComponent:0.55]; }
+- (void)drawRect:(NSRect)dirtyRect {
+    [self.tintColor setFill];
+    NSRectFillUsingOperation(self.bounds, NSCompositingOperationSourceOver);
+}
+- (void)viewDidChangeEffectiveAppearance {
+    [super viewDidChangeEffectiveAppearance];
+    self.needsDisplay = YES;
+}
+@end
+
+@interface ItsycalWindowFrameView : NSVisualEffectView
 @property (nonatomic, assign) CGFloat arrowMidX;
 @end
 
@@ -101,7 +119,13 @@ static const CGFloat kVerticalPadding = 11;
 {
     self = [super initWithFrame:frameRect];
     if (self) {
+        self.material = NSVisualEffectMaterialPopover;
+        self.blendingMode = NSVisualEffectBlendingModeBehindWindow;
+        self.state = NSVisualEffectStateActive;
         self.wantsLayer = YES;
+        PopupTintView *tint = [[PopupTintView alloc] initWithFrame:self.bounds];
+        tint.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
+        [self addSubview:tint];
         self.additionalSafeAreaInsets = NSEdgeInsetsMake(kArrowHeight + kVerticalPadding, 0, kVerticalPadding, 0);
 
         // The window's shape is a rounded body with a little arrow at
@@ -130,16 +154,6 @@ static const CGFloat kVerticalPadding = 11;
 {
     [super layout];
     [self updateMask];
-}
-
-- (BOOL)wantsUpdateLayer
-{
-    return YES;
-}
-
-- (void)updateLayer
-{
-    self.layer.backgroundColor = Theme.mainBackgroundColor.CGColor;
 }
 
 - (void)updateMask

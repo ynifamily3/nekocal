@@ -1,21 +1,16 @@
 {
-  "images" : [
+  "images": [
     {
-      "filename" : "menubaricon3.png",
-      "idiom" : "mac",
-      "scale" : "1x"
-    },
-    {
-      "filename" : "menubaricon3@2x.png",
-      "idiom" : "mac",
-      "scale" : "2x"
+      "filename": "KawaiiCal-MenuBarCat.pdf",
+      "idiom": "mac"
     }
   ],
-  "info" : {
-    "author" : "xcode",
-    "version" : 1
+  "info": {
+    "author": "xcode",
+    "version": 1
   },
-  "properties" : {
-    "template-rendering-intent" : "template"
+  "properties": {
+    "template-rendering-intent": "template",
+    "preserves-vector-representation": true
   }
 }

@@ -1,0 +1,17 @@
+// Korean localization for the bundled MASShortcut recorder.
+"Cancel" = "취소";
+"Click to record new shortcut" = "클릭해서 새 단축키를 지정하세요";
+"Delete shortcut" = "단축키 삭제";
+"keyboard shortcut" = "키보드 단축키";
+"OK" = "확인";
+"Record Shortcut" = "단축키 지정";
+"Shortcut cleared" = "단축키를 삭제했습니다";
+"Shortcut set" = "단축키를 지정했습니다";
+"Space" = "스페이스";
+"The key combination %@ cannot be used" = "%@ 키 조합을 사용할 수 없습니다";
+"This combination cannot be used because it is already used by a system-wide keyboard shortcut.\nIf you really want to use this key combination, most shortcuts can be changed in the Keyboard & Mouse panel in System Preferences." = "시스템 단축키로 이미 사용 중인 키 조합입니다.\n이 키 조합을 사용하려면 시스템 설정 › 키보드 › 키보드 단축키에서 기존 단축키를 변경해 주세요.";
+"This shortcut cannot be used because it is already used by the menu item ‘%@’." = "‘%@’ 메뉴에서 이미 사용 중인 단축키입니다.";
+"To record a new shortcut, click this button, and then type the new shortcut, or press delete to clear an existing shortcut." = "새 단축키를 지정하려면 이 버튼을 클릭한 뒤 원하는 키 조합을 누르세요. 기존 단축키는 Delete 키로 삭제할 수 있습니다.";
+"Type New Shortcut" = "새 단축키를 누르세요";
+"Type Shortcut" = "원하는 키 조합을 누르세요";
+"Use Old Shortcut" = "기존 단축키 유지";

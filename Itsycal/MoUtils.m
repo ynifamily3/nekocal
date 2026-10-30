@@ -16,9 +16,28 @@ NSTimeInterval MonotonicClockTime(void)
     return t.tv_sec + t.tv_nsec * 1.e-9;
 }
 
+NSLocale *DisplayLocale(void)
+{
+    NSLocale *current = NSLocale.currentLocale;
+    NSString *language = NSBundle.mainBundle.preferredLocalizations.firstObject;
+    if (![language hasPrefix:@"ko"] || [current.languageCode isEqualToString:@"ko"]) return current;
+    static NSLocale *previous = nil;
+    static NSLocale *korean = nil;
+    if (current != previous) {
+        previous = current;
+        NSMutableDictionary *parts = [[NSLocale componentsFromLocaleIdentifier:current.localeIdentifier] mutableCopy];
+        parts[NSLocaleLanguageCode] = @"ko";
+        NSString *hourFormat = [NSDateFormatter dateFormatFromTemplate:@"j" options:0 locale:current];
+        if ([hourFormat containsString:@"H"]) parts[@"hours"] = @"h23";
+        else if ([hourFormat containsString:@"h"]) parts[@"hours"] = @"h12";
+        korean = [NSLocale localeWithLocaleIdentifier:[NSLocale localeIdentifierFromComponents:parts]];
+    }
+    return korean;
+}
+
 NSString *StringByStrippingZeroMinutes(NSString *duration)
 {
-    if ([[[NSLocale currentLocale] localeIdentifier] hasPrefix:@"en"]) {
+    if ([[DisplayLocale() localeIdentifier] hasPrefix:@"en"]) {
         if ([duration containsString:@"AM"] || [duration containsString:@"PM"] ||
             [duration containsString:@"am"] || [duration containsString:@"pm"]) {
             duration = [duration stringByReplacingOccurrencesOfString:@":00" withString:@""];
@@ -31,7 +50,7 @@ NSLocale *DateIntervalFormatterLocale(void)
 {
     static NSLocale *currentLocale = nil;
     static NSLocale *formatterLocale = nil;
-    NSLocale *locale = [NSLocale currentLocale];
+    NSLocale *locale = DisplayLocale();
     // currentLocale returns the same object until the user's settings change.
     if (locale == currentLocale) return formatterLocale;
     currentLocale = locale;

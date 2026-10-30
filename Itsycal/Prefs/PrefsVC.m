@@ -4,6 +4,7 @@
 //
 
 #import "PrefsVC.h"
+#import "SettingsStyle.h"
 #import "PrefsAboutVC.h"
 
 @implementation PrefsVC
@@ -29,12 +30,13 @@
 
 - (void)loadView
 {
-    self.view = [NSView new];
+    self.view = SettingsBackground();
 }
 
 - (void)viewDidAppear
 {
     [super viewDidAppear];
+    StyleSettingsWindow(self.view.window);
     if (self.view.window.toolbar == nil) {
         self.view.window.toolbar = _toolbar;
         self.view.window.toolbarStyle = NSWindowToolbarStylePreference;
@@ -103,6 +105,7 @@
         _contentWidth = MAX(_contentWidth, childViewController.view.fittingSize.width);
         childViewController.view.autoresizingMask = NSViewWidthSizable;
     }
+    _contentWidth = MAX(_contentWidth, 480);
     [self.view setFrame:NSMakeRect(0, 0, _contentWidth, childViewControllers[0].view.fittingSize.height)];
     [childViewControllers[0].view setFrame:self.view.bounds];
     [self.view addSubview:childViewControllers[0].view];
@@ -164,7 +167,9 @@
 {
     NSToolbarItem *item = [[NSToolbarItem alloc] initWithItemIdentifier:itemIdentifier];
     item.label = itemIdentifier;
-    item.image = [NSImage imageNamed:NSStringFromClass([[self viewControllerForItemIdentifier:itemIdentifier] class])];
+    NSArray *symbols=@[@"gearshape",@"calendar",@"paintpalette",@"info.circle"];
+    NSUInteger index=[_toolbarIdentifiers indexOfObject:itemIdentifier];
+    item.image = index<symbols.count ? [NSImage imageWithSystemSymbolName:symbols[index] accessibilityDescription:itemIdentifier] : nil;
     item.target = self;
     item.action = @selector(toolbarItemClicked:);
     item.tag = [_toolbarIdentifiers indexOfObject:itemIdentifier];
