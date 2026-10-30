@@ -1,4 +1,4 @@
-# KawaiiCal 🐱
+# nekocal 🐱
 
 고양이와 함께 쓰는 macOS 메뉴 막대 캘린더입니다. [Itsycal](https://github.com/sfsam/Itsycal)을 기반으로 한국어 표시와 개인화 기능, UI를 다듬었습니다.
 
@@ -36,7 +36,17 @@
 
 ## 설치
 
-[0.1.0 릴리스에서 공증된 앱 내려받기](https://github.com/ynifamily3/kawaiiCal/releases/tag/v0.1.0)
+### Homebrew
+
+```sh
+brew install --cask ynifamily3/tap/nekocal
+```
+
+프로젝트·패키지 이름은 `nekocal`이며, 현재 배포 앱의 이름은 **KawaiiCal**입니다. 설치 후 응용 프로그램 폴더에서 KawaiiCal을 실행해 주세요.
+
+### 직접 다운로드
+
+[0.1.0 릴리스에서 공증된 앱 내려받기](https://github.com/ynifamily3/nekocal/releases/tag/v0.1.0)
 
 1. `KawaiiCal-0.1.0-arm64.zip`을 내려받고 압축을 풉니다.
 2. `KawaiiCal.app`을 응용 프로그램 폴더로 옮겨 실행합니다.
@@ -49,8 +59,8 @@ Apple Silicon Mac과 macOS 27 이상이 필요합니다. 앱은 Developer ID로 
 Xcode 27과 Command Line Tools가 필요합니다.
 
 ```sh
-git clone https://github.com/ynifamily3/kawaiiCal.git
-cd kawaiiCal
+git clone https://github.com/ynifamily3/nekocal.git
+cd nekocal
 ./scripts/build.sh
 ```
 
@@ -63,7 +73,7 @@ cd kawaiiCal
 open /Applications/KawaiiCal.app
 ```
 
-일정을 표시하려면 macOS의 캘린더 접근 권한을 허용해야 합니다. 앱 식별자는 `ing.miel.KawaiiCal`이며 원본 Itsycal과 설정을 별도로 저장합니다. 자동 업데이트는 비활성화되어 있어 업데이트하려면 다시 빌드해야 합니다.
+일정을 표시하려면 macOS의 캘린더 접근 권한을 허용해야 합니다. 앱 식별자는 `ing.miel.KawaiiCal`이며 원본 Itsycal과 설정을 별도로 저장합니다. 앱 내 자동 업데이트는 비활성화되어 있습니다. Homebrew 사용자는 `brew update` 후 `brew upgrade --cask ynifamily3/tap/nekocal`로, 직접 설치한 사용자는 새 릴리스를 내려받아 업데이트할 수 있습니다.
 
 ## 서명과 공증
 
@@ -75,7 +85,7 @@ SIGNING_IDENTITY='Developer ID Application: YOUR NAME (TEAMID)' \
 NOTARY_PROFILE=kawaii-cal ./scripts/notarize.sh
 ```
 
-인증서의 개인 키, 암호, 공증 자격 증명은 저장소에 넣지 마세요. 빌드·설치·공증 및 각 기능의 상세 설명은 [개발 문서](README.personal.md)를 참고하세요. 빌드 결과물은 Git에 포함하지 않으며, 설치용 앱은 [GitHub 릴리스](https://github.com/ynifamily3/kawaiiCal/releases)에서 제공합니다.
+인증서의 개인 키, 암호, 공증 자격 증명은 저장소에 넣지 마세요. 빌드·설치·공증 및 각 기능의 상세 설명은 [개발 문서](README.personal.md)를 참고하세요. 빌드 결과물은 Git에 포함하지 않으며, 설치용 앱은 [GitHub 릴리스](https://github.com/ynifamily3/nekocal/releases)에서 제공합니다.
 
 ## 원본과 라이선스
 

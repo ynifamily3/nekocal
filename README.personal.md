@@ -1,4 +1,6 @@
-# KawaiiCal
+# nekocal
+
+Public project/package name: `nekocal`. The app bundle, display name, bundle identifier and signing credentials retain the existing KawaiiCal identity.
 
 Personal Apple Silicon fork of [Itsycal](https://github.com/sfsam/Itsycal), based on 1a31050555a97e3b7aac5470ec147abfe7aa0d6a (0.27.3).
 
@@ -30,7 +32,7 @@ After successful notarization, quit the running app and use `./scripts/install.s
 
 The local 0.1.0 build passed Developer ID signature verification, Apple notarization, stapled-ticket validation and Gatekeeper assessment. These checks apply to that built artifact; anyone rebuilding must sign and notarize with their own credentials. Live calendar create/delete operations were not exercised against personal data.
 
-Public source repository: [ynifamily3/kawaiiCal](https://github.com/ynifamily3/kawaiiCal). The original source is retained as the `upstream` remote.
+Public source repository: [ynifamily3/nekocal](https://github.com/ynifamily3/nekocal). The original source is retained as the `upstream` remote.
 
 ## Korean date/time audit
 
