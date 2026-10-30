@@ -4,6 +4,24 @@
 
 현재 버전은 **0.1.0**이며, **Apple Silicon · macOS 27 이상**을 대상으로 합니다.
 
+## 스크린샷
+
+**메뉴 막대** — 이모티콘과 시간을 함께 표시합니다.
+
+<img src="docs/screenshots/menu-bar.png" alt="고양이 카오모지와 시간이 표시된 메뉴 막대" width="242">
+
+**캘린더와 일정 목록** — 한국어 날짜와 주말·공휴일 색상을 확인할 수 있습니다.
+
+<img src="docs/screenshots/calendar.png" alt="한국어 월 제목과 주말·공휴일 색상이 적용된 캘린더 및 일정 목록" width="300">
+
+**모양 설정** — 테마, 글자 크기, 메뉴 막대와 캘린더 표시를 설정합니다.
+
+<img src="docs/screenshots/appearance.png" alt="테마와 메뉴 막대 및 캘린더 옵션을 제공하는 모양 설정 화면" width="480">
+
+**이모티콘 관리** — 목록과 교체 간격을 설정하거나 CSV를 불러올 수 있습니다.
+
+<img src="docs/screenshots/emoji-manager.png" alt="이모티콘 목록, 자동 교체 간격과 CSV 불러오기를 제공하는 관리 화면" width="480">
+
 ## 주요 기능
 
 - 한국어 날짜·시간 표시와 설정 화면
