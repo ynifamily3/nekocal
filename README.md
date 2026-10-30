@@ -16,6 +16,16 @@
 
 공휴일 데이터는 자동으로 구독하지 않습니다. macOS 캘린더에 추가된 대한민국 공휴일 캘린더 등을 설정의 이벤트 탭에서 공휴일 캘린더로 지정해 주세요.
 
+## 설치
+
+[0.1.0 릴리스에서 공증된 앱 내려받기](https://github.com/ynifamily3/kawaiiCal/releases/tag/v0.1.0)
+
+1. `KawaiiCal-0.1.0-arm64.zip`을 내려받고 압축을 풉니다.
+2. `KawaiiCal.app`을 응용 프로그램 폴더로 옮겨 실행합니다.
+3. 캘린더 접근 권한을 허용합니다.
+
+Apple Silicon Mac과 macOS 27 이상이 필요합니다. 앱은 Developer ID로 서명하고 Apple 공증을 완료했습니다.
+
 ## 직접 빌드하기
 
 Xcode 27과 Command Line Tools가 필요합니다.
@@ -47,7 +57,7 @@ SIGNING_IDENTITY='Developer ID Application: YOUR NAME (TEAMID)' \
 NOTARY_PROFILE=kawaii-cal ./scripts/notarize.sh
 ```
 
-인증서의 개인 키, 암호, 공증 자격 증명은 저장소에 넣지 마세요. 빌드·설치·공증 및 각 기능의 상세 설명은 [개발 문서](README.personal.md)를 참고하세요. 이 저장소는 소스 코드를 제공하며, 현재 빌드 결과물은 포함하지 않습니다.
+인증서의 개인 키, 암호, 공증 자격 증명은 저장소에 넣지 마세요. 빌드·설치·공증 및 각 기능의 상세 설명은 [개발 문서](README.personal.md)를 참고하세요. 빌드 결과물은 Git에 포함하지 않으며, 설치용 앱은 [GitHub 릴리스](https://github.com/ynifamily3/kawaiiCal/releases)에서 제공합니다.
 
 ## 원본과 라이선스
 
