@@ -42,6 +42,8 @@
 brew install --cask ynifamily3/tap/nekocal
 ```
 
+Homebrew에서 신뢰되지 않은 tap이라는 오류가 나오면 `brew trust --cask ynifamily3/tap/nekocal`을 실행한 뒤 설치 명령을 다시 실행해 주세요.
+
 프로젝트·패키지 이름은 `nekocal`이며, 현재 배포 앱의 이름은 **KawaiiCal**입니다. 설치 후 응용 프로그램 폴더에서 KawaiiCal을 실행해 주세요.
 
 ### 직접 다운로드
