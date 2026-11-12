@@ -245,6 +245,16 @@ static const CFTimeInterval kOpenDuration = 0.3;
 
     [CATransaction commit];
 
+    // The layer mask only clips what this process draws. WindowServer
+    // composites the behind-window material and the window shadow
+    // itself, and without maskImage it uses the whole window
+    // rectangle: the shadow then outlines a rectangle and the corners
+    // and the area beside the arrow read as a pale box.
+    self.maskImage = NSIsEmptyRect(bounds) ? nil : [NSImage imageWithSize:bounds.size flipped:NO drawingHandler:^BOOL(NSRect dstRect) {
+        [NSColor.blackColor setFill];
+        [shape fill];
+        return YES;
+    }];
     [self.window invalidateShadow];
 }
 

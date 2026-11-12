@@ -2,7 +2,7 @@
 
 고양이와 함께 쓰는 macOS 메뉴 막대 캘린더입니다. [Itsycal](https://github.com/sfsam/Itsycal)을 기반으로 한국어 표시와 개인화 기능, UI를 다듬었습니다.
 
-현재 버전은 **0.1.1**이며, **Apple Silicon · macOS 27 이상**을 대상으로 합니다.
+현재 버전은 **0.1.2**이며, **Apple Silicon · macOS 27 이상**을 대상으로 합니다.
 
 ## 스크린샷
 
@@ -48,9 +48,9 @@ Homebrew에서 신뢰되지 않은 tap이라는 오류가 나오면 `brew trust 
 
 ### 직접 다운로드
 
-[0.1.1 릴리스에서 공증된 앱 내려받기](https://github.com/ynifamily3/nekocal/releases/tag/v0.1.1)
+[0.1.2 릴리스에서 공증된 앱 내려받기](https://github.com/ynifamily3/nekocal/releases/tag/v0.1.2)
 
-1. `KawaiiCal-0.1.1-arm64.zip`을 내려받고 압축을 풉니다.
+1. `KawaiiCal-0.1.2-arm64.zip`을 내려받고 압축을 풉니다.
 2. `KawaiiCal.app`을 응용 프로그램 폴더로 옮겨 실행합니다.
 3. 캘린더 접근 권한을 허용합니다.
 

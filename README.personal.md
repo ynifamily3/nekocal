@@ -30,7 +30,7 @@ After successful notarization, quit the running app and use `./scripts/install.s
 
 ## Release validation
 
-The local 0.1.0 and 0.1.1 builds passed Developer ID signature verification, Apple notarization, stapled-ticket validation and Gatekeeper assessment. These checks apply to that built artifact; anyone rebuilding must sign and notarize with their own credentials. Live calendar create/delete operations were not exercised against personal data.
+The local 0.1.0, 0.1.1 and 0.1.2 builds passed Developer ID signature verification, Apple notarization, stapled-ticket validation and Gatekeeper assessment. These checks apply to that built artifact; anyone rebuilding must sign and notarize with their own credentials. Live calendar create/delete operations were not exercised against personal data.
 
 Public source repository: [ynifamily3/nekocal](https://github.com/ynifamily3/nekocal). The original source is retained as the `upstream` remote.
 
@@ -73,7 +73,7 @@ The AppKit material-layout harness verifies the actual production views: materia
 
 ## Popup arrow and opening animation
 
-The popup's arrow follows NSPopover's geometry: about 10.5pt tall with straight 45° sides, a 2.5pt rounded tip and 3pt concave fillets where it meets the body. Body and arrow are drawn as one closed outline in the layer mask, so no seam or overlap shows at the join. The arrow is dropped when it would collide with either rounded corner.
+The popup's arrow follows NSPopover's geometry: about 10.5pt tall with straight 45° sides, a 2.5pt rounded tip and 3pt concave fillets where it meets the body. Body and arrow are drawn as one closed outline, so no seam or overlap shows at the join. The same outline is the layer mask (which clips the tint and content) and the visual effect view's `maskImage`. WindowServer composites the behind-window material and the window shadow itself and ignores the layer mask; without `maskImage` the shadow outlines the whole window rectangle and the corners and the area beside the arrow read as a pale box. The arrow is dropped when it would collide with either rounded corner.
 
 When the popup opens it fades in while growing from 85% scale out of the arrow tip with a short spring, like NSPopover. With Reduce Motion on it only fades. Closing keeps the existing fade.
 

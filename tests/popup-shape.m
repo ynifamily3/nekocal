@@ -1,5 +1,8 @@
 // The popup's outline: a rounded body plus an NSPopover-like arrow drawn
 // as one path, so nothing shows through where the arrow meets the body.
+// The visual effect view's maskImage must carry the same shape: WindowServer
+// uses it for the behind-window material and the window shadow, and without
+// it the shadow outlines the whole window rectangle.
 //
 //   xcrun clang -fobjc-arc -framework Cocoa -framework QuartzCore -I Itsycal -I Itsycal/MoCode \
 //     tests/popup-shape.m Itsycal/ItsycalWindow.m Itsycal/Themer.m Itsycal/MoUtils.m \
@@ -24,6 +27,18 @@ static int LayerAlpha(CALayer *mask, NSSize size, NSPoint p) {
     return a;
 }
 
+// Alpha of the visual effect view's maskImage at a point (y up).
+static int ImageAlpha(NSImage *image, NSPoint p) {
+    NSBitmapImageRep *rep = [[NSBitmapImageRep alloc] initWithBitmapDataPlanes:NULL pixelsWide:(NSInteger)image.size.width pixelsHigh:(NSInteger)image.size.height bitsPerSample:8 samplesPerPixel:4 hasAlpha:YES isPlanar:NO colorSpaceName:NSDeviceRGBColorSpace bytesPerRow:0 bitsPerPixel:0];
+    [NSGraphicsContext saveGraphicsState];
+    NSGraphicsContext.currentContext = [NSGraphicsContext graphicsContextWithBitmapImageRep:rep];
+    [image drawInRect:NSMakeRect(0, 0, image.size.width, image.size.height)];
+    [NSGraphicsContext restoreGraphicsState];
+    NSUInteger px[4];
+    [rep getPixel:px atX:(NSInteger)p.x y:(NSInteger)floor(image.size.height - p.y)];
+    return (int)px[3];
+}
+
 int main(void) { @autoreleasepool {
     [NSApplication sharedApplication]; [Themer shared];
     ItsycalWindow *window = [ItsycalWindow new];
@@ -42,11 +57,16 @@ int main(void) { @autoreleasepool {
     CGFloat mid = size.width / 2;
     NSPoint inside[] = { {mid, size.height / 2}, {20, 20}, {mid, bodyTop - 0.5}, {mid, bodyTop + 5}, {mid, bodyTop + 0.5}, {mid, bodyTop + 9.5}, {mid - 10, bodyTop + 0.5} };
     NSPoint outside[] = { {0, 0}, {size.width - 1, 0}, {0, size.height - 1}, {1, bodyTop - 1}, {size.width - 2, bodyTop - 1}, {40, bodyTop + 4}, {size.width - 40, bodyTop + 4}, {mid + 8, bodyTop + 7}, {mid - 9, bodyTop + 7} };
+    NSImage *maskImage = frame.maskImage;
+    Check(maskImage != nil);
+    Check(NSEqualSizes(maskImage.size, size));
     for (int i = 0; i < 7; i++) {
         Check(LayerAlpha(mask, size, inside[i]) == 255);
+        Check(ImageAlpha(maskImage, inside[i]) == 255);
     }
     for (int i = 0; i < 9; i++) {
         Check(LayerAlpha(mask, size, outside[i]) == 0);
+        Check(ImageAlpha(maskImage, outside[i]) == 0);
     }
 
     // NSPopover-sized arrow: about 10.5pt above the body, measured
@@ -64,7 +84,8 @@ int main(void) { @autoreleasepool {
     NSRect farRight = NSMakeRect(NSMaxX(window.frame) - 12, NSMaxY(window.frame) + 2, 20, 22);
     [window positionRelativeToRect:farRight screenMaxX:NSMaxX(window.frame) + 10];
     Check(LayerAlpha(mask, size, NSMakePoint(size.width - 12, bodyTop + 4)) == 0);
+    Check(ImageAlpha(frame.maskImage, NSMakePoint(size.width - 12, bodyTop + 4)) == 0);
     Check(LayerAlpha(mask, size, NSMakePoint(mid, size.height / 2)) == 255);
 
-    puts("Popup outline: rounded body and arrow form one solid shape; arrow drops near the corner.");
+    puts("Popup outline: rounded body and arrow form one solid shape in the layer mask and maskImage; arrow drops near the corner.");
 } return 0; }
