@@ -11,9 +11,18 @@
 #import "Themer.h"
 
 static const CGFloat kMinimumSpaceBetweenWindowAndScreenEdge = 10;
-static const CGFloat kArrowHeight  = 8;
+// Arrow geometry follows NSPopover's: straight 45° sides, a rounded
+// tip and small concave fillets where it meets the body. kArrowHeight
+// is the space reserved above the body; the rounded tip ends ~0.5pt
+// below it.
+static const CGFloat kArrowHeight  = 11;
+static const CGFloat kArrowSideHeight = 11.5; // before rounding the tip
+static const CGFloat kArrowTipRadius = 2.5;
+static const CGFloat kArrowBaseRadius = 3;
 static const CGFloat kCornerRadius = 16;
 static const CGFloat kVerticalPadding = 11;
+static const CGFloat kOpenScale = 0.85;
+static const CFTimeInterval kOpenDuration = 0.3;
 
 // A noninteractive tint reduces wallpaper bleed without dimming the text.
 @interface PopupTintView : NSView
@@ -35,6 +44,7 @@ static const CGFloat kVerticalPadding = 11;
 
 @interface ItsycalWindowFrameView : NSVisualEffectView
 @property (nonatomic, assign) CGFloat arrowMidX;
+@property (nonatomic, readonly) NSPoint arrowTip;
 @end
 
 #pragma mark -
@@ -100,6 +110,48 @@ static const CGFloat kVerticalPadding = 11;
     [self invalidateShadow];
 }
 
+- (void)makeKeyAndOrderFrontAnimated
+{
+    if (self.visible) {
+        [self makeKeyAndOrderFront:nil];
+        return;
+    }
+    ItsycalWindowFrameView *frameView = (ItsycalWindowFrameView *)self.contentView;
+    [frameView layoutSubtreeIfNeeded];
+    CALayer *layer = frameView.layer;
+    BOOL reduceMotion = NSWorkspace.sharedWorkspace.accessibilityDisplayShouldReduceMotion;
+
+    self.alphaValue = 0;
+    [self makeKeyAndOrderFront:nil];
+
+    [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context) {
+        context.duration = reduceMotion ? 0.15 : 0.18;
+        context.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut];
+        self.animator.alphaValue = 1;
+    }];
+    if (reduceMotion || layer == nil) return;
+
+    // Grow out of the arrow tip like NSPopover. The scale is about
+    // the tip, expressed relative to the layer's anchor point.
+    NSPoint tip = frameView.arrowTip;
+    CGSize size = layer.bounds.size;
+    CGFloat dx = tip.x - layer.anchorPoint.x * size.width;
+    CGFloat dy = tip.y - layer.anchorPoint.y * size.height;
+    CATransform3D from = CATransform3DMakeTranslation(dx, dy, 0);
+    from = CATransform3DScale(from, kOpenScale, kOpenScale, 1);
+    from = CATransform3DTranslate(from, -dx, -dy, 0);
+
+    CASpringAnimation *grow = [CASpringAnimation animationWithKeyPath:@"transform"];
+    grow.fromValue = [NSValue valueWithCATransform3D:from];
+    grow.toValue = [NSValue valueWithCATransform3D:CATransform3DIdentity];
+    grow.mass = 1;
+    grow.stiffness = 420;
+    grow.damping = 34;
+    grow.duration = MAX(grow.settlingDuration, kOpenDuration);
+    [layer removeAnimationForKey:@"open"];
+    [layer addAnimation:grow forKey:@"open"];
+}
+
 @end
 
 #pragma mark -
@@ -111,8 +163,7 @@ static const CGFloat kVerticalPadding = 11;
 
 @implementation ItsycalWindowFrameView
 {
-    CALayer *_bodyMask;
-    CAShapeLayer *_arrowMask;
+    CAShapeLayer *_shapeMask;
 }
 
 - (instancetype)initWithFrame:(NSRect)frameRect
@@ -129,17 +180,12 @@ static const CGFloat kVerticalPadding = 11;
         self.additionalSafeAreaInsets = NSEdgeInsetsMake(kArrowHeight + kVerticalPadding, 0, kVerticalPadding, 0);
 
         // The window's shape is a rounded body with a little arrow at
-        // the top. Masking our layer to that shape clips our background
-        // and the content's corners. Masks use only alpha, so any opaque
-        // color works.
-        _bodyMask = [CALayer layer];
-        _bodyMask.backgroundColor = NSColor.blackColor.CGColor;
-        _bodyMask.cornerRadius = kCornerRadius;
-        _bodyMask.cornerCurve = kCACornerCurveContinuous;
-        _arrowMask = [CAShapeLayer layer];
-        _arrowMask.fillColor = NSColor.blackColor.CGColor;
-        [_bodyMask addSublayer:_arrowMask];
-        self.layer.mask = _bodyMask;
+        // the top. Masking our layer to that shape clips the material,
+        // the tint and the content's corners. Masks use only alpha, so
+        // any opaque color works.
+        _shapeMask = [CAShapeLayer layer];
+        _shapeMask.fillColor = NSColor.blackColor.CGColor;
+        self.layer.mask = _shapeMask;
     }
     return self;
 }
@@ -161,36 +207,45 @@ static const CGFloat kVerticalPadding = 11;
     [CATransaction begin];
     [CATransaction setDisableActions:YES];
 
-    NSRect bodyRect = self.bounds;
+    NSRect bounds = self.bounds;
+    NSRect bodyRect = bounds;
     bodyRect.size.height -= kArrowHeight;
-    _bodyMask.frame = bodyRect;
-
     // Add the arrow to the body if its right edge is inside
     // the right edge of the body (taking into account the corner
     // radius). This accounts for the edge-case where Itsycal is
     // all the way to the right in the menu bar. This is possible
     // if the user has a 3rd party app like Bartender.
-    // The arrow is in _bodyMask's coordinates, whose origin is the
-    // bottom left of the body. Its base extends 1pt into the body so
-    // no seam shows where they meet.
-    CGFloat curveOffset = 5;
-    CGFloat arrowMidX = (_arrowMidX == 0) ? NSMidX(self.bounds) : _arrowMidX;
-    CGFloat arrowRightEdge = arrowMidX + curveOffset + kArrowHeight;
-    CGFloat bodyRightEdge = NSMaxX(bodyRect) - kCornerRadius;
-    NSBezierPath *arrowPath = [NSBezierPath bezierPath];
-    if (arrowRightEdge < bodyRightEdge) {
-        CGFloat x = arrowMidX - kArrowHeight - curveOffset;
-        CGFloat y = NSHeight(bodyRect);
-        [arrowPath moveToPoint:NSMakePoint(x, y)];
-        [arrowPath relativeCurveToPoint:NSMakePoint(kArrowHeight + curveOffset, kArrowHeight) controlPoint1:NSMakePoint(curveOffset, 0) controlPoint2:NSMakePoint(kArrowHeight, kArrowHeight)];
-        [arrowPath relativeCurveToPoint:NSMakePoint(kArrowHeight + curveOffset, -kArrowHeight) controlPoint1:NSMakePoint(curveOffset, 0) controlPoint2:NSMakePoint(kArrowHeight, -kArrowHeight)];
-        [arrowPath relativeLineToPoint:NSMakePoint(0, -1)];
-        [arrowPath lineToPoint:NSMakePoint(x, y - 1)];
-        [arrowPath closePath];
+    // Body and arrow are one closed outline, so there is no seam
+    // or overlap where they meet.
+    CGFloat minX = NSMinX(bodyRect), maxX = NSMaxX(bodyRect);
+    CGFloat minY = NSMinY(bodyRect), top = NSMaxY(bodyRect);
+    CGFloat r = MIN(kCornerRadius, MIN(NSWidth(bodyRect), NSHeight(bodyRect)) / 2);
+    CGFloat m = (_arrowMidX == 0) ? NSMidX(bounds) : _arrowMidX;
+    CGFloat h = kArrowSideHeight;
+    CGFloat halfBase = h + kArrowBaseRadius;
+    BOOL hasArrow = (m + halfBase < maxX - r) && (m - halfBase > minX + r);
+
+    NSBezierPath *shape = [NSBezierPath bezierPath];
+    [shape moveToPoint:NSMakePoint(minX + r, minY)];
+    [shape appendBezierPathWithArcFromPoint:NSMakePoint(maxX, minY) toPoint:NSMakePoint(maxX, top) radius:r];
+    [shape appendBezierPathWithArcFromPoint:NSMakePoint(maxX, top) toPoint:NSMakePoint(minX, top) radius:r];
+    if (hasArrow) {
+        [shape lineToPoint:NSMakePoint(m + halfBase, top)];
+        [shape appendBezierPathWithArcFromPoint:NSMakePoint(m + h, top) toPoint:NSMakePoint(m, top + h) radius:kArrowBaseRadius];
+        [shape appendBezierPathWithArcFromPoint:NSMakePoint(m, top + h) toPoint:NSMakePoint(m - h, top) radius:kArrowTipRadius];
+        [shape appendBezierPathWithArcFromPoint:NSMakePoint(m - h, top) toPoint:NSMakePoint(m - halfBase, top) radius:kArrowBaseRadius];
     }
-    _arrowMask.path = arrowPath.CGPath;
+    [shape appendBezierPathWithArcFromPoint:NSMakePoint(minX, top) toPoint:NSMakePoint(minX, minY) radius:r];
+    [shape appendBezierPathWithArcFromPoint:NSMakePoint(minX, minY) toPoint:NSMakePoint(maxX, minY) radius:r];
+    [shape closePath];
+    _arrowTip = NSMakePoint(m, hasArrow ? top + h - kArrowTipRadius * (M_SQRT2 - 1) : top);
+
+    _shapeMask.frame = bounds;
+    _shapeMask.path = shape.CGPath;
 
     [CATransaction commit];
+
+    [self.window invalidateShadow];
 }
 
 @end

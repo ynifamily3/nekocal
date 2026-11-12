@@ -978,7 +978,7 @@ static NSArray<NSString *> *ObservedDefaultsKeys(void)
 {
     [[NSApplication sharedApplication] unhideWithoutActivation];
     [self positionItsycalWindowForInitialPresentation:YES];
-    [self.itsycalWindow makeKeyAndOrderFront:self];
+    [self.itsycalWindow makeKeyAndOrderFrontAnimated];
     [self.itsycalWindow makeFirstResponder:_moCal];
     _inactiveTime = 0;
 }

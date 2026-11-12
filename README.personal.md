@@ -30,7 +30,7 @@ After successful notarization, quit the running app and use `./scripts/install.s
 
 ## Release validation
 
-The local 0.1.0 build passed Developer ID signature verification, Apple notarization, stapled-ticket validation and Gatekeeper assessment. These checks apply to that built artifact; anyone rebuilding must sign and notarize with their own credentials. Live calendar create/delete operations were not exercised against personal data.
+The local 0.1.0 and 0.1.1 builds passed Developer ID signature verification, Apple notarization, stapled-ticket validation and Gatekeeper assessment. These checks apply to that built artifact; anyone rebuilding must sign and notarize with their own credentials. Live calendar create/delete operations were not exercised against personal data.
 
 Public source repository: [ynifamily3/nekocal](https://github.com/ynifamily3/nekocal). The original source is retained as the `upstream` remote.
 
@@ -70,6 +70,19 @@ The main popup uses AppKit's popover material with behind-window blending and a 
 Agenda titles and date headings are 1pt larger than the existing text-size setting; event titles use medium weight. Time/location text retains the existing size. Event rows use 4pt top/bottom padding and 2pt internal spacing; date headings use 7pt top and 3pt bottom padding. Event dots are realigned to the title. Calendar cell sizes and selection outlines are preserved.
 
 The AppKit material-layout harness verifies the actual production views: material/blending configuration, transparent window/calendar, sticky heading material, and fitting/font sizes across all three text-size settings in light/dark appearances. It does not exercise personal events or visually measure the live desktop backdrop.
+
+## Popup arrow and opening animation
+
+The popup's arrow follows NSPopover's geometry: about 10.5pt tall with straight 45° sides, a 2.5pt rounded tip and 3pt concave fillets where it meets the body. Body and arrow are drawn as one closed outline in the layer mask, so no seam or overlap shows at the join. The arrow is dropped when it would collide with either rounded corner.
+
+When the popup opens it fades in while growing from 85% scale out of the arrow tip with a short spring, like NSPopover. With Reduce Motion on it only fades. Closing keeps the existing fade.
+
+Run the outline regression check with:
+
+```sh
+xcrun clang -fobjc-arc -framework Cocoa -framework QuartzCore -I Itsycal -I Itsycal/MoCode tests/popup-shape.m Itsycal/ItsycalWindow.m Itsycal/Themer.m Itsycal/MoUtils.m -o work/popup-shape-check
+work/popup-shape-check
+```
 
 ## Settings presentation
 
