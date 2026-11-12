@@ -30,7 +30,7 @@ After successful notarization, quit the running app and use `./scripts/install.s
 
 ## Release validation
 
-The local 0.1.0, 0.1.1 and 0.1.2 builds passed Developer ID signature verification, Apple notarization, stapled-ticket validation and Gatekeeper assessment. These checks apply to that built artifact; anyone rebuilding must sign and notarize with their own credentials. Live calendar create/delete operations were not exercised against personal data.
+The local 0.1.0 through 0.1.3 builds passed Developer ID signature verification, Apple notarization, stapled-ticket validation and Gatekeeper assessment. These checks apply to that built artifact; anyone rebuilding must sign and notarize with their own credentials. Live calendar create/delete operations were not exercised against personal data.
 
 Public source repository: [ynifamily3/nekocal](https://github.com/ynifamily3/nekocal). The original source is retained as the `upstream` remote.
 
@@ -100,7 +100,9 @@ An isolated resource-backed test verified Korean resource selection, recorder re
 
 ## App icon
 
-The app icon is a simple, vector-style cat-face emoji illustration. Its transparent 1024px raster asset is `Itsycal/AppIcon.icon/Assets/KawaiiCal-Cat-Simple.png`; Icon Composer supplies native light/dark backgrounds and icon sizes. The built-in image generation prompt is preserved in `Design/KawaiiCal-Cat-Simple.prompt.txt`. The compiled 256px icon was visually inspected before installation.
+The app icon is a skeuomorphic desk calendar: a glossy red stitched header with two metal binder rings, warm white paper with a letterpressed "31", stacked sheets and a curled corner. It is original artwork drawn in code by `swift Design/AppIconCalendar.swift Itsycal/AppIcon.icon/Assets/KawaiiCal-Calendar.png` (no third-party images). Icon Composer places the transparent 1024px layer on a light gray (dark gray in Dark Mode) fill with translucency off, so the paper stays opaque. The compiled 16–256px icons were visually inspected.
+
+The previous cat-face icon asset (`KawaiiCal-Cat-Simple.png`) and its image-generation prompt in `Design/KawaiiCal-Cat-Simple.prompt.txt` are retained.
 
 ## Menu bar cat icon
 
